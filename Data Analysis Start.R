@@ -68,7 +68,7 @@ data_analysis <- function(results){
     final_input = paste(min_type, minBIC, sep = ", ")
     analysis_matrix[i,3] = final_input
     
-##Difference between AIC and BIC
+  ##Difference between AIC and BIC##
     diff = abs(minAIC - minBIC)
     analysis_matrix[i,4] = diff
   }

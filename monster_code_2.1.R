@@ -1,5 +1,5 @@
-###########Sigma Generation Functions###########
-#Hi
+####Sigma Generation Functions####
+
 ##
 #Make a CSH matrix
 ##
@@ -92,12 +92,41 @@ makeSymm <- function(matr) {
   return(newMatrix)
 }
 
-#######################################################
 
-##
-# Data Generation Function
-##
+####Generates and fits data, varying rho each trial####
+rho_experiment <- function(N, n_obs, n_sub, means, variances) {
+  #lengths must be consistent
+  if (n_obs == length(variances) && length(variances) == length(means)) {
+    rho = 0
+    #initialize sigma with rho value of 0
+    Sigma = makeCSH(n_obs, variances, rho)
+    
+    #initialize results matrix
+    results = matrix(nrow = N, ncol = 15)
+    
+    for (i in 1:N) {
+      #put IC values into results matrix
+      data = generate_data(n_obs, n_sub, Sigma, means)
+      ICVector = fit_data(data, n_obs, n_sub)
+      results[i,] = ICVector
+      
+      #increment rho by 1/N, so that rho goes from 0 to 1
+      #as loop ends
+      rho = rho + 1 / N
+      Sigma = makeCSH(n_obs, variances, rho)
+    }
+    
+    
+    return (results)
+  }
+  else {
+    return (NULL)
+  }
+}
 
+
+
+####Data Generation Function####
 generate_data <-
   function(n_obs, n_sub, Sigma, means) {
     ###where Sigma is n_obs x n_sub, means is of form c(x,..,y) w/ n_obs terms
@@ -123,12 +152,9 @@ generate_data <-
     return(clean_data)
   }
 
-#######################################################
 
-###
-#Fit Data Function
-###
 
+####Fit Data Function####
 fit_data <- function(clean_data, n_obs, n_sub) {
   observation = clean_data$observation
   time = clean_data$time
@@ -215,12 +241,91 @@ fit_data <- function(clean_data, n_obs, n_sub) {
   )
 }
 
-#######################################################
 
-###
-#Full Monster Code###
-###
+####Data Analysis####
 
+data_analysis <- function(results){
+  dimension = dim(results)
+  N = dimension[1]
+  count_IC = dimension[2]
+  analysis_matrix = matrix(0, N, 4)
+  colnames(analysis_matrix) = c("minAIC", "minAICc", "minBIC", "AIC-BIC")
+  rownames(analysis_matrix) = c(1:N)
+  
+  for (i in 1:N){
+    
+    ###AIC###
+    
+    all_AIC = c(results[i, seq(count_IC, from=1, by=3)])
+    minAIC = min(all_AIC)
+    name = names(all_AIC)
+    
+    model_index = 1
+    for (term in all_AIC){
+      if (term != minAIC){
+        model_index = model_index + 1
+      }
+      else{
+        break
+      }
+    }
+    min_type = name[model_index]
+    min_type = substr(min_type, 1, nchar(min_type)-7)
+    final_input = paste(min_type, minAIC, sep = ", ")
+    analysis_matrix[i,1] = final_input
+    
+    ###AICc###
+    
+    all_AICc = c(results[i, seq(count_IC, from=2, by=3)])
+    minAICc = min(all_AICc)
+    name = names(all_AICc)
+    
+    model_index = 1
+    for (term in all_AICc){
+      if (term != minAICc){
+        model_index = model_index + 1
+      }
+      else{
+        break
+      }
+    }
+    min_type = name[model_index]
+    min_type = substr(min_type, 1, nchar(min_type)-8)
+    final_input = paste(min_type, minAICc, sep = ", ")
+    analysis_matrix[i,2] = final_input
+    
+    ###BIC###
+    
+    all_BIC = c(results[i, seq(count_IC, from=3, by=3)])
+    minBIC = min(all_BIC)
+    name = names(all_BIC)
+    
+    model_index = 1
+    for (term in all_BIC){
+      if (term != minBIC){
+        model_index = model_index + 1
+      }
+      else{
+        break
+      }
+    }
+    min_type = name[model_index]
+    min_type = substr(min_type, 1, nchar(min_type)-7)
+    final_input = paste(min_type, minBIC, sep = ", ")
+    analysis_matrix[i,3] = final_input
+    
+    ##Difference between AIC and BIC##
+    diff = abs(minAIC - minBIC)
+    analysis_matrix[i,4] = diff
+  }
+  
+  return(analysis_matrix)
+}
+
+
+
+
+####Full Monster Code####
 
 results_matrix <- function(N, n_obs, n_sub, Sigma, means) {
   ## inputs:
@@ -253,35 +358,7 @@ results_matrix <- function(N, n_obs, n_sub, Sigma, means) {
     "ARH1fit_BIC"
   ) 
   rownames(results) = c(1:N)
+  results = data_analysis(results)
   return(results)
 }
 
-#Generates and fits data, varying rho each trial
-rho_experiment <- function(N, n_obs, n_sub, means, variances) {
-  #lengths must be consistent
-  if (n_obs == length(variances) && length(variances) == length(means)) {
-    rho = 0
-    #initialize sigma with rho value of 0
-    Sigma = makeCSH(n_obs, variances, rho)
-    
-    #initialize results matrix
-    results = matrix(nrow = N, ncol = 15)
-    
-    for (i in 1:N) {
-      #put IC values into results matrix
-      data = generate_data(n_obs, n_sub, Sigma, means)
-      ICVector = fit_data(data, n_obs, n_sub)
-      results[i,] = ICVector
-      
-      #increment rho by 1/N, so that rho goes from 0 to 1
-      #as loop ends
-      rho = rho + 1 / N
-      Sigma = makeCSH(n_obs, variances, rho)
-    }
-    
-    return (results)
-  }
-  else {
-    return (NULL)
-  }
-}
