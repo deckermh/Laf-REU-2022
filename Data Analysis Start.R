@@ -2,8 +2,8 @@ data_analysis <- function(results){
   dimension = dim(results)
   N = dimension[1]
   count_IC = dimension[2]
-  analysis_matrix = matrix(0, N, 3)
-  colnames(analysis_matrix) = c("minAIC", "minAICc", "minBIC")
+  analysis_matrix = matrix(0, N, 4)
+  colnames(analysis_matrix) = c("minAIC", "minAICc", "minBIC", "AIC-BIC")
   rownames(analysis_matrix) = c(1:N)
   
   for (i in 1:N){
@@ -67,8 +67,14 @@ data_analysis <- function(results){
     min_type = substr(min_type, 1, nchar(min_type)-7)
     final_input = paste(min_type, minBIC, sep = ", ")
     analysis_matrix[i,3] = final_input
+    
+##Difference between AIC and BIC
+    diff = abs(minAIC - minBIC)
+    analysis_matrix[i,4] = diff
   }
       
   return(analysis_matrix)
 }
+
+
   
