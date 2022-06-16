@@ -24,6 +24,7 @@ data_analysis <- function(results){
       }
     }
     min_type = name[model_index]
+    min_type = substr(min_type, 1, nchar(min_type)-7)
     final_input = paste(min_type, minAIC, sep = ", ")
     analysis_matrix[i,1] = final_input
     
@@ -43,6 +44,7 @@ data_analysis <- function(results){
       }
     }
     min_type = name[model_index]
+    min_type = substr(min_type, 1, nchar(min_type)-8)
     final_input = paste(min_type, minAICc, sep = ", ")
     analysis_matrix[i,2] = final_input
     
@@ -62,6 +64,7 @@ data_analysis <- function(results){
       }
     }
     min_type = name[model_index]
+    min_type = substr(min_type, 1, nchar(min_type)-7)
     final_input = paste(min_type, minBIC, sep = ", ")
     analysis_matrix[i,3] = final_input
   }
