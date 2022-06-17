@@ -93,6 +93,7 @@ makeSymm <- function(matr) {
 }
 
 
+
 ####Generates and fits data, varying rho each trial####
 rho_experiment <- function(N, n_obs, n_sub, means, variances) {
   #lengths must be consistent
@@ -126,6 +127,7 @@ rho_experiment <- function(N, n_obs, n_sub, means, variances) {
 
 
 
+
 ####Data Generation Function####
 generate_data <-
   function(n_obs, n_sub, Sigma, means) {
@@ -153,7 +155,6 @@ generate_data <-
   }
 
 
-
 ####Fit Data Function####
 fit_data <- function(clean_data, n_obs, n_sub) {
   observation = clean_data$observation
@@ -169,23 +170,22 @@ fit_data <- function(clean_data, n_obs, n_sub) {
   #Unstructured
   ##
   UNfit = gls(observation ~ time, corr = corSymm(form = ~ 1 |id),weights = varIdent(form = ~ 1 | time))
-  summary(UNfit)
   
   ##
   #Simple?
   ##
   
+  SIMfit = gls(observation ~ time)
+  
   ##
   #Compound Symmetry
   ##
   CSfit = gls(observation ~ time, corr = corCompSymm(form = ~ 1 |id))
-  summary(CSfit)
   
   ##
   #AR(1)
   ##
   AR1fit = gls(observation ~ time, corr = corAR1(form = ~ 1 | id))
-  summary(AR1fit)
   
   ##
   #CSH
@@ -202,12 +202,14 @@ fit_data <- function(clean_data, n_obs, n_sub) {
   UNfit_AIC = summary(UNfit)$AIC
   CSHfit_AIC = summary(CSHfit)$AIC
   ARH1fit_AIC = summary(ARH1fit)$AIC
+  SIMfit_AIC = summary(SIMfit)$AIC
   
   CSfit_BIC = summary(CSfit)$BIC
   AR1fit_BIC = summary(AR1fit)$BIC
   UNfit_BIC = summary(UNfit)$BIC
   CSHfit_BIC = summary(CSHfit)$BIC
   ARH1fit_BIC = summary(ARH1fit)$BIC
+  SIMfit_BIC = summary(SIMfit)$BIC
   
   CSfit_AICc = summary(CSfit)$AIC + (2 * (n_obs)) * (n_obs + 1) / (n_sub - n_obs -
                                                                      1)
@@ -219,12 +221,17 @@ fit_data <- function(clean_data, n_obs, n_sub) {
                                                                        1)
   ARH1fit_AICc = summary(ARH1fit)$AIC + (2 * (n_obs)) * (n_obs + 1) / (n_sub - n_obs -
                                                                          1)
+  SIMfit_AICc = summary(SIMfit)$AIC + (2 * (n_obs)) * (n_obs + 1) / (n_sub - n_obs -
+                                                                       1)
   
   return (
     c(
       UNfit_AIC,
       UNfit_AICc,
       UNfit_BIC,
+      SIMfit_AIC,
+      SIMfit_AICc,
+      SIMfit_BIC,
       CSfit_AIC,
       CSfit_AICc,
       CSfit_BIC,
@@ -240,6 +247,7 @@ fit_data <- function(clean_data, n_obs, n_sub) {
     )
   )
 }
+
 
 
 ####Data Analysis####
@@ -328,11 +336,13 @@ data_analysis <- function(results){
 ####Full Monster Code####
 
 results_matrix <- function(N, n_obs, n_sub, Sigma, means) {
+  ##Implement for loop for new input to repeat trials##
+  
   ## inputs:
   ## N = # of trials to be run
   ## Sigma = generated sigma matrix/matrices
   
-  ICvectorlength = 15
+  ICvectorlength = 18
   results = matrix(0, N, ICvectorlength)
   for (i in 1:N) {
     clean_data = generate_data(n_obs, n_sub, Sigma, means)
@@ -344,6 +354,9 @@ results_matrix <- function(N, n_obs, n_sub, Sigma, means) {
     "UNfit_AIC",
     "UNfit_AICc",
     "UNfit_BIC",
+    "SIMfit_AIC",
+    "SIMfit_AICc",
+    "SIMfit_BIC",
     "CSfit_AIC",
     "CSfit_AICc",
     "CSfit_BIC",
