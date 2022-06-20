@@ -327,6 +327,8 @@ data_analysis <- function(results){
     analysis_matrix[i,4] = diff
   }
   
+  analysis_matrix = cbind(analysis_matrix, results)
+  
   return(analysis_matrix)
 }
 
