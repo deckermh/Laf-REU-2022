@@ -256,9 +256,6 @@ data_analysis <- function(results){
   dimension = dim(results)
   N = dimension[1]
   count_IC = dimension[2]
-  analysis_matrix = matrix(0, N, 4)
-  colnames(analysis_matrix) = c("minAIC", "minAICc", "minBIC", "AIC-BIC")
-  rownames(analysis_matrix) = c(1:N)
   
   sorted_results = matrix(0, N, 18)
   colnames(sorted_results) = c(paste("AIC", 1:6, sep = "_"), paste("AICc", 1:6, sep = "_"), paste("BIC", 1:6, sep = "_"))
@@ -286,20 +283,6 @@ data_analysis <- function(results){
     
     sorted_results[i, 1:6] = final_sorted
     
-    model_index = 1
-    for (term in all_AIC){
-      if (term != minAIC){
-        model_index = model_index + 1
-      }
-      else{
-        break
-      }
-    }
-    min_type = name[model_index]
-    min_type = substr(min_type, 1, nchar(min_type)-7)
-    final_input = paste(min_type, minAIC, sep = ", ")
-    analysis_matrix[i,1] = final_input
-    
     ###AICc###
     
     all_AICc = c(results[i, seq(count_IC, from=2, by=3)])
@@ -318,20 +301,6 @@ data_analysis <- function(results){
     }
     
     sorted_results[i, 7:12] = final_sorted
-    
-    model_index = 1
-    for (term in all_AICc){
-      if (term != minAICc){
-        model_index = model_index + 1
-      }
-      else{
-        break
-      }
-    }
-    min_type = name[model_index]
-    min_type = substr(min_type, 1, nchar(min_type)-8)
-    final_input = paste(min_type, minAICc, sep = ", ")
-    analysis_matrix[i,2] = final_input
     
     ###BIC###
     
@@ -352,28 +321,9 @@ data_analysis <- function(results){
     
     sorted_results[i, 13:18] = final_sorted
     
-    model_index = 1
-    for (term in all_BIC){
-      if (term != minBIC){
-        model_index = model_index + 1
-      }
-      else{
-        break
-      }
-    }
-    min_type = name[model_index]
-    min_type = substr(min_type, 1, nchar(min_type)-7)
-    final_input = paste(min_type, minBIC, sep = ", ")
-    analysis_matrix[i,3] = final_input
-    
-    ##Difference between AIC and BIC##
-    diff = abs(minAIC - minBIC)
-    analysis_matrix[i,4] = diff
   }
   
-  analysis_matrix = cbind(sorted_results, analysis_matrix)
-  
-  return(analysis_matrix)
+  return(sorted_results)
 }
 
 
