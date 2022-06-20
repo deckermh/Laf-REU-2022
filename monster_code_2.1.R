@@ -251,7 +251,7 @@ fit_data <- function(clean_data, n_obs, n_sub) {
 
 
 ####Data Analysis####
-
+      ###outputs 1-6 ranked least to greatest for each IC
 data_analysis <- function(results){
   dimension = dim(results)
   N = dimension[1]
