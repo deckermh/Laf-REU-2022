@@ -260,13 +260,31 @@ data_analysis <- function(results){
   colnames(analysis_matrix) = c("minAIC", "minAICc", "minBIC", "AIC-BIC")
   rownames(analysis_matrix) = c(1:N)
   
+  sorted_results = matrix(0, N, 18)
+  colnames(sorted_results) = c(paste("AIC", 1:6, sep = "_"), paste("AICc", 1:6, sep = "_"), paste("BIC", 1:6, sep = "_"))
+  
+  
   for (i in 1:N){
     
     ###AIC###
     
     all_AIC = c(results[i, seq(count_IC, from=1, by=3)])
+    
     minAIC = min(all_AIC)
     name = names(all_AIC)
+    
+    sorted_AIC = sort(all_AIC, decreasing = FALSE)
+    sorted_name = names(sorted_AIC)
+    final_sorted = c()
+    
+    for (k in 1:6){
+      type = substr(sorted_name[k], 1, nchar(sorted_name[k])-7)
+      value = sorted_AIC[k]
+      item = paste(type, value, sep = ", ")
+      final_sorted = c(final_sorted, item)
+    }
+    
+    sorted_results[i, 1:6] = final_sorted
     
     model_index = 1
     for (term in all_AIC){
@@ -288,6 +306,19 @@ data_analysis <- function(results){
     minAICc = min(all_AICc)
     name = names(all_AICc)
     
+    sorted_AICc = sort(all_AICc, decreasing = FALSE)
+    sorted_name = names(sorted_AICc)
+    final_sorted = c()
+    
+    for (k in 1:6){
+      type = substr(sorted_name[k], 1, nchar(sorted_name[k])-8)
+      value = sorted_AICc[k]
+      item = paste(type, value, sep = ", ")
+      final_sorted = c(final_sorted, item)
+    }
+    
+    sorted_results[i, 7:12] = final_sorted
+    
     model_index = 1
     for (term in all_AICc){
       if (term != minAICc){
@@ -308,6 +339,19 @@ data_analysis <- function(results){
     minBIC = min(all_BIC)
     name = names(all_BIC)
     
+    sorted_BIC = sort(all_BIC, decreasing = FALSE)
+    sorted_name = names(sorted_BIC)
+    final_sorted = c()
+    
+    for (k in 1:6){
+      type = substr(sorted_name[k], 1, nchar(sorted_name[k])-7)
+      value = sorted_BIC[k]
+      item = paste(type, value, sep = ", ")
+      final_sorted = c(final_sorted, item)
+    }
+    
+    sorted_results[i, 13:18] = final_sorted
+    
     model_index = 1
     for (term in all_BIC){
       if (term != minBIC){
@@ -327,7 +371,7 @@ data_analysis <- function(results){
     analysis_matrix[i,4] = diff
   }
   
-  analysis_matrix = cbind(analysis_matrix, results)
+  analysis_matrix = cbind(sorted_results, analysis_matrix)
   
   return(analysis_matrix)
 }
