@@ -17,7 +17,7 @@ diff <- function(results, exp_col_num_AIC) {
     for (j in seq(18, from=1, by = 3)) {
       #each entry in difference matrix will be a difference between exp
       #and all other covariance structure AIC values
-      diff_matrix[i,j] = exp_value_AIC - currentRow[j]
+      diff_matrix[i,j] = currentRow[j] - exp_value_AIC
     }
     
     #now get AICc column index, and value
@@ -26,7 +26,7 @@ diff <- function(results, exp_col_num_AIC) {
     
     #for each AICc value...
     for (j in seq(18, from = 2, by = 3)) {
-      diff_matrix[i,j] = exp_value_AICc - currentRow[j]
+      diff_matrix[i,j] = currentRow[j] - exp_value_AICc
     }
     
     #now get BIC column index, and value
@@ -35,7 +35,7 @@ diff <- function(results, exp_col_num_AIC) {
     
     #for each BIC value
     for (j in seq(18, from = 3, by = 3)) {
-      diff_matrix[i,j] = exp_value_BIC - currentRow[j]
+      diff_matrix[i,j] = currentRow[j] - exp_value_BIC
     }
   }
   
