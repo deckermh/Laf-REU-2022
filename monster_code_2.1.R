@@ -1,4 +1,7 @@
-####Sigma Generation Functions####
+####~~~~~~~~~~~~~~#Covariance Matrix Generators#~~~~~~~~~~~~~~~~~~####
+
+
+#Sigma Generation Functions####
 
 ##
 #Make a CSH matrix
@@ -94,6 +97,7 @@ makeSymm <- function(matr) {
 
 
 
+
 ####Generates and fits data, varying rho each trial####
 rho_experiment <- function(N, n_obs, n_sub, means, variances) {
   #lengths must be consistent
@@ -125,10 +129,11 @@ rho_experiment <- function(N, n_obs, n_sub, means, variances) {
   }
 }
 
-
+####~~~~~~~~~~~~~~#Results Matrix Generators#~~~~~~~~~~~~~~~~~~####
 
 
 ####Data Generation Function####
+#returns data ready to input into Fit Data function
 generate_data <-
   function(n_obs, n_sub, Sigma, means) {
     ###where Sigma is n_obs x n_sub, means is of form c(x,..,y) w/ n_obs terms
@@ -154,8 +159,8 @@ generate_data <-
     return(clean_data)
   }
 
-
 ####Fit Data Function####
+#returns results matrix (summary of all IC values for each trial)
 fit_data <- function(clean_data, n_obs, n_sub) {
   observation = clean_data$observation
   time = clean_data$time
@@ -248,10 +253,52 @@ fit_data <- function(clean_data, n_obs, n_sub) {
   )
 }
 
+####Compliation of Data Gen and Fit, outputs results matrix####
+results_matrix <- function(N, n_obs, n_sub, Sigma, means) {
+  ##Implement for loop for new input to repeat trials##
+  
+  ## inputs:
+  ## N = # of trials to be run
+  ## Sigma = generated sigma matrix/matrices
+  
+  ICvectorlength = 18
+  results = matrix(0, N, ICvectorlength)
+  for (i in 1:N) {
+    clean_data = generate_data(n_obs, n_sub, Sigma, means)
+    ICvector = fit_data(clean_data, n_obs, n_sub)                          #returns vector of AIC and BIC
+    results[i,] = ICvector
+  }
+  
+  colnames(results) = c(
+    "UNfit_AIC",
+    "UNfit_AICc",
+    "UNfit_BIC",
+    "SIMfit_AIC",
+    "SIMfit_AICc",
+    "SIMfit_BIC",
+    "CSfit_AIC",
+    "CSfit_AICc",
+    "CSfit_BIC",
+    "AR1fit_AIC",
+    "AR1fit_AICc",
+    "AR1fit_BIC",
+    "CSHfit_AIC",
+    "CSHfit_AICc",
+    "CSHfit_BIC",
+    "ARH1fit_AIC",
+    "ARH1fit_AICc",
+    "ARH1fit_BIC"
+  ) 
+  rownames(results) = c(1:N)
+  return(results)
+}
+
+
+####~~~~~~~~~~~~~~#Results Matrix Reconfiguration Functions#~~~~~~~~~~~~~~~~~~####
 
 
 ####Data Analysis####
-      ###outputs 1-6 ranked least to greatest for each IC
+#outputs 1-6 ranked least to greatest for each IC
 data_analysis <- function(results){
   dimension = dim(results)
   N = dimension[1]
@@ -326,48 +373,63 @@ data_analysis <- function(results){
   return(sorted_results)
 }
 
-
-
-
-####Full Monster Code####
-
-results_matrix <- function(N, n_obs, n_sub, Sigma, means) {
-  ##Implement for loop for new input to repeat trials##
+####Difference Matrix####
+diff <- function(results, exp_col_num_AIC) {
   
-  ## inputs:
-  ## N = # of trials to be run
-  ## Sigma = generated sigma matrix/matrices
+  #@param exp_col_num_AIC: represents column index of AIC_[FIT]
+  #can be 1 (UN), 4 (SIM), 7 (CS), 10 (AR1), 13 (CSH), 16 (ARH1)
   
-  ICvectorlength = 18
-  results = matrix(0, N, ICvectorlength)
+  N = dim(results)[1]
+  
+  diff_matrix = matrix(nrow = N, ncol = dim(results)[2])
+  
+  #for each row...
   for (i in 1:N) {
-    clean_data = generate_data(n_obs, n_sub, Sigma, means)
-    ICvector = fit_data(clean_data, n_obs, n_sub)                          #returns vector of AIC and BIC
-    results[i,] = ICvector
+    currentRow = results[i,]
+    
+    ###AIC###
+    
+    exp_value_AIC = results[i, exp_col_num_AIC]
+    
+    #for each AIC value in results... count up by 3's
+    for (j in seq(18, from=1, by = 3)) {
+      #each entry in difference matrix will be a difference between exp
+      #and all other covariance structure AIC values
+      diff_matrix[i,j] = currentRow[j] - exp_value_AIC
+    }
+    
+    ###AICc###
+    
+    #now get AICc column index, and value
+    exp_col_num_AICc = exp_col_num_AIC + 1
+    exp_value_AICc = results[i, exp_col_num_AICc]
+    
+    #for each AICc value...
+    for (j in seq(18, from = 2, by = 3)) {
+      diff_matrix[i,j] = currentRow[j] - exp_value_AICc
+    }
+    
+    ###BIC###
+    
+    #now get BIC column index, and value
+    exp_col_num_BIC = exp_col_num_AIC + 2
+    exp_value_BIC = results[i, exp_col_num_BIC]
+    
+    #for each BIC value
+    for (j in seq(18, from = 3, by = 3)) {
+      diff_matrix[i,j] = currentRow[j] - exp_value_BIC
+    }
   }
   
-  colnames(results) = c(
-    "UNfit_AIC",
-    "UNfit_AICc",
-    "UNfit_BIC",
-    "SIMfit_AIC",
-    "SIMfit_AICc",
-    "SIMfit_BIC",
-    "CSfit_AIC",
-    "CSfit_AICc",
-    "CSfit_BIC",
-    "AR1fit_AIC",
-    "AR1fit_AICc",
-    "AR1fit_BIC",
-    "CSHfit_AIC",
-    "CSHfit_AICc",
-    "CSHfit_BIC",
-    "ARH1fit_AIC",
-    "ARH1fit_AICc",
-    "ARH1fit_BIC"
-  ) 
-  rownames(results) = c(1:N)
-  results = data_analysis(results)
-  return(results)
+  #set col names
+  colnames(diff_matrix) = colnames(results)
+  
+  return (diff_matrix)
 }
+
+
+
+
+
+
 
