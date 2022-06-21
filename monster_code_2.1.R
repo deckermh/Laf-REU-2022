@@ -253,7 +253,7 @@ fit_data <- function(clean_data, n_obs, n_sub) {
   )
 }
 
-####Compliation of Data Gen and Fit, outputs results matrix####
+####Compilation of Data Gen and Fit, outputs results matrix####
 results_matrix <- function(N, n_obs, n_sub, Sigma, means) {
   ##Implement for loop for new input to repeat trials##
   
@@ -426,6 +426,7 @@ diff <- function(results, exp_col_num_AIC) {
   
   return (diff_matrix)
 }
+
 
 
 
