@@ -560,6 +560,44 @@ AICDistribution <- function(results) {
   }
 }
 
+AICcDistribution <- function(results) {
+  N = dim(results)[1]
+  
+  AICcMatrix = matrix(nrow = N, ncol = 6)
+  for (i in 1:N) {
+    k = 1
+    for (j in seq(18, from = 3, by = 3)) {
+      AICcMatrix[i, k] = results[i, j]
+      k = k + 1
+    }
+  }
+  
+  #histogram each column
+  for (i in 1:6) {
+    hist(AICcMatrix[, i])
+  }
+}
+
+BICDistribution <- function(results) {
+  N = dim(results)[1]
+  
+  BICMatrix = matrix(nrow = N, ncol = 6)
+  for (i in 1:N) {
+    k = 1
+    for (j in seq(18, from = 2, by = 3)) {
+      BICMatrix[i, k] = results[i, j]
+      k = k + 1
+    }
+  }
+  
+  #histogram each column
+  for (i in 1:6) {
+    hist(BICMatrix[, i])
+  }
+}
+
+
+
 
 
 
