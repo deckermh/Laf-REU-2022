@@ -294,6 +294,21 @@ results_matrix <- function(N, n_obs, n_sub, Sigma, means) {
 }
 
 
+####Final Results Matrix Gen Function to Send to Job####
+job_results_gen <- function(N, n_obs, n_sub, Sigma, means, exp_type){
+  res = results_matrix(N, n_obs, n_sub, Sigma, means)
+  
+  means_string = "means"
+  for (mean in means){
+    means_string = paste(means_string, mean, sep = "_")
+  }
+  
+  file_name = paste("N", N, "obs", n_obs, "sub", n_sub, exp_type, means_string, sep = "_")
+  file_name = paste(file_name, ".csv", sep = "")
+  write.csv(res, file_name)
+  return(file_name)
+}
+
 ####~~~~~~~~~~~~~~#Results Matrix Reconfiguration Functions#~~~~~~~~~~~~~~~~~~####
 
 
@@ -426,6 +441,8 @@ diff <- function(results, exp_col_num_AIC) {
   
   return (diff_matrix)
 }
+
+
 
 
 
