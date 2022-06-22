@@ -24,79 +24,82 @@ correct <- function(exp_col_num_AIC, diff_matrix, thumb) {
           print(1)
         }
         else if (diff_matrix[i, j] < 0 &&
-            diff_matrix[i, j] > -(thumb)) {
+                 diff_matrix[i, j] > -(thumb)) {
           ##Wrong model, not significant
           print(2)
         }
         else if (diff_matrix[i, j] < 0 &&
-            diff_matrix[i, j] < -(thumb)) {
+                 diff_matrix[i, j] < -(thumb)) {
           ##Wrong model, Significant
           print(3)
         }
         else if (diff_matrix[i, j] > 0 &&
-            diff_matrix[i, j] > thumb) {
+                 diff_matrix[i, j] > thumb) {
           ##Right model, significant
+          print(4)
+        }
+        else {
+          ##difference of 0
+          print(5)
+        }
+      }
+    }
+    
+    #Failure and successes for AICc
+    
+    for (j in seq(18, from = 2, by = 3)) {
+      if (j == exp_col_num_AICc) {
+        
+      }
+      else{
+        if (diff_matrix[i, j] > 0 &&
+            diff_matrix[i, j] < thumb) {
+          ##Right model, not significant
+          print(1)
+        }
+        else if (diff_matrix[i, j] < 0 &&
+                 diff_matrix[i, j] > -(thumb)) {
+          ##Wrong model, not significant
+          print(2)
+        }
+        else if (diff_matrix[i, j] < 0 &&
+                 diff_matrix[i, j] < -(thumb)) {
+          ##Wrong model, Significant
+          print(3)
+        }
+        else if (diff_matrix[i, j] > 0 &&
+                 diff_matrix[i, j] > thumb) {
+          ##Right model, signifigant
           print(4)
         }
       }
     }
-      
-      #Failure and successes for AICc
-      
-      for (j in seq(18, from = 2, by = 3)) {
-        if (j == exp_col_num_AICc) {
-          
-        }
-        else{
-          if (diff_matrix[i, j] > 0 &&
-              diff_matrix[i, j] < thumb) {
-            ##Right model, not significant
-            print(1)
-          }
-          else if (diff_matrix[i, j] < 0 &&
-              diff_matrix[i, j] > -(thumb)) {
-            ##Wrong model, not significant
-            print(2)
-          }
-          else if (diff_matrix[i, j] < 0 &&
-              diff_matrix[i, j] < -(thumb)) {
-            ##Wrong model, Significant
-            print(3)
-          }
-          else if (diff_matrix[i, j] > 0 &&
-              diff_matrix[i, j] > thumb) {
-            ##Right model, signifigant
-            print(4)
-          }
-        }
-      }
+    
+    #Failure and successes for BIC
+    for (j in seq(18, from = 3, by = 3)) {
+      if (j == exp_col_num_BIC) {
         
-        #Failure and successes for BIC
-        for (j in seq(18, from = 3, by = 3)) {
-          if (j == exp_col_num_BIC) {
-            
-          }
-          if (diff_matrix[i, j] > 0 &&
-              diff_matrix[i, j] < thumb) {
-            ##Right model, not significant
-            print(1)
-          }
-          else if (diff_matrix[i, j] < 0 &&
-              diff_matrix[i, j] > -(thumb)) {
-            ##Wrong model, not significant
-            print(2)
-          }
-          else if (diff_matrix[i, j] < 0 &&
-              diff_matrix[i, j] < -(thumb)) {
-            ##Wrong model, Significant
-            print(3)
-          }
-         else if (diff_matrix[i, j] > 0 &&
-              diff_matrix[i, j] > thumb) {
-            ##Right model, significant
-            print(4)
-          }
-        }
+      }
+      if (diff_matrix[i, j] > 0 &&
+          diff_matrix[i, j] < thumb) {
+        ##Right model, not significant
+        print(1)
+      }
+      else if (diff_matrix[i, j] < 0 &&
+               diff_matrix[i, j] > -(thumb)) {
+        ##Wrong model, not significant
+        print(2)
+      }
+      else if (diff_matrix[i, j] < 0 &&
+               diff_matrix[i, j] < -(thumb)) {
+        ##Wrong model, Significant
+        print(3)
+      }
+      else if (diff_matrix[i, j] > 0 &&
+               diff_matrix[i, j] > thumb) {
+        ##Right model, significant
+        print(4)
+      }
+    }
   }
 }
-      
