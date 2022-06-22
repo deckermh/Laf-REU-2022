@@ -103,3 +103,22 @@ BICDistribution <- function(N, n_subs, Sigma, means) {
     hist(BIC_scores[,i])
   }
 }
+
+AICDistribution(results) {
+  N = dim(results)[1]
+  
+  AICMatrix = matrix(nrow = N, ncol = 6)
+  for (i in 1:N) {
+    
+    k = 1
+    for (j in seq(18, from = 1, by = 3)) {
+      AICMatrix[i, k] = results[i, j]
+      k = k+1
+    }
+  }
+  
+  #histogram each column
+  for (i in 1:6) {
+    hist(AICMatrix[,i])
+  }
+}
