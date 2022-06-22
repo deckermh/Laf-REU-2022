@@ -40,7 +40,7 @@ correct <- function(exp_col_num_AIC, diff_matrix, thumb) {
         }
         else {
           ##difference of 0
-          print(5)
+          print(0)
         }
       }
     }
