@@ -2,8 +2,11 @@
 
 #thumb = variable to use for "rule of thumb"
 
-# 1 = Success
-# 0 = Fail
+# 1 =
+# 2 =
+# 3 =
+# 4 = 
+# 0 =
 
 correct <- function(exp_col_num_AIC, diff_matrix, thumb) {
   N = dim(diff_matrix)[1]
@@ -12,7 +15,9 @@ correct <- function(exp_col_num_AIC, diff_matrix, thumb) {
   exp_col_num_BIC = exp_col_num_AIC + 2
   
   for (i in 1:N) {
+    
     ##Failures and successes for AIC
+    AIC_
     for (j in seq(18, from = 1, by = 3)) {
       if (j == exp_col_num_AIC) {
         
@@ -69,8 +74,12 @@ correct <- function(exp_col_num_AIC, diff_matrix, thumb) {
         }
         else if (diff_matrix[i, j] > 0 &&
                  diff_matrix[i, j] > thumb) {
-          ##Right model, signifigant
+          ##Right model, significant
           print(4)
+        }
+        else {
+          ##difference of 0
+          print(0)
         }
       }
     }
@@ -100,6 +109,11 @@ correct <- function(exp_col_num_AIC, diff_matrix, thumb) {
         ##Right model, significant
         print(4)
       }
+      else {
+        ##difference of 0
+        print(0)
+      }
     }
   }
+
 }
