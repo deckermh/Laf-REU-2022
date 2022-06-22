@@ -59,8 +59,7 @@ makeAR1 <- function(n, p, sigma) {
 ##
 #Make an ARH1 Matrix
 ##
-makeARH1 <-
-  function(n, p, sigma) {
+makeARH1 <-function(n, p, sigma) {
     ####sigma looks like c(x,y,...,z)
     if (length(sigma) == n) {
       ARH1matrix = matrix(0, n, n)                             ###create empty matrix
@@ -92,9 +91,6 @@ makeSymm <- function(matr) {
   }
   return(newMatrix)
 }
-
-
-
 
 ####Generates and fits data, varying rho each trial####
 rho_experiment <- function(N, n_obs, n_sub, means, variances) {
@@ -130,8 +126,7 @@ rho_experiment <- function(N, n_obs, n_sub, means, variances) {
 ####~~~~~~~~~~~~~~#Results Matrix Generators#~~~~~~~~~~~~~~~~~~####
 ####Data Generation Function####
 #returns data ready to input into Fit Data function
-generate_data <-
-  function(n_obs, n_sub, Sigma, means) {
+generate_data <- function(n_obs, n_sub, Sigma, means) {
     ###where Sigma is n_obs x n_sub, means is of form c(x,..,y) w/ n_obs terms
     
     ##making general data form
@@ -289,7 +284,6 @@ results_matrix <- function(N, n_obs, n_sub, Sigma, means) {
   return(results)
 }
 
-
 ####Final Results Matrix Gen Function to Send to Job####
 job_results_gen <- function(N, n_obs, n_sub, Sigma, means, exp_type){
   res = results_matrix(N, n_obs, n_sub, Sigma, means)
@@ -305,7 +299,7 @@ job_results_gen <- function(N, n_obs, n_sub, Sigma, means, exp_type){
   return(file_name)
 }
 
-####~~~~~~~~~~~~~~#Results Matrix Reconfiguration Functions#~~~~~~~~~~~~~~~~~~####
+####~~~~~~~~~~~~~~#Data Analysis Functions#~~~~~~~~~~~~~~~~~~####
 ####Data Analysis####
 #outputs 1-6 ranked least to greatest for each IC
 data_analysis <- function(results){
@@ -454,6 +448,7 @@ quad_correct <- function(diff_matrix, thumb){
     for (j in 1:N){
       
       if (diff_matrix[j, i]>0 && diff_matrix[j, i] < thumb){
+        ##Right model, not significant
         count_1 = count_1 + 1
       }
       else if (diff_matrix[j, i] < 0 &&
@@ -483,7 +478,7 @@ quad_correct <- function(diff_matrix, thumb){
   return(quad_matrix)
 }
 
-####
+####Distribution Gen Functions####
 AICDistribution <- function(N, n_subs, Sigma, means) {
   #matrix with AIC scores for different fits as columns
   AIC_scores = matrix(nrow = N, ncol = 6)
@@ -518,7 +513,6 @@ AICDistribution <- function(N, n_subs, Sigma, means) {
     hist(AIC_scores[, i])
   }
 }
-
 
 AICcDistribution <- function(N, n_subs, Sigma, means) {
   #matrix with AICc scores for different fits as columns
@@ -643,5 +637,7 @@ BICDistribution <- function(results) {
     hist(BICMatrix[, i])
   }
 }
+
+
 
 
