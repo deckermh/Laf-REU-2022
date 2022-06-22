@@ -1,6 +1,4 @@
 ####~~~~~~~~~~~~~~#Covariance Matrix Generators#~~~~~~~~~~~~~~~~~~####
-
-
 #Sigma Generation Functions####
 
 ##
@@ -130,8 +128,6 @@ rho_experiment <- function(N, n_obs, n_sub, means, variances) {
 }
 
 ####~~~~~~~~~~~~~~#Results Matrix Generators#~~~~~~~~~~~~~~~~~~####
-
-
 ####Data Generation Function####
 #returns data ready to input into Fit Data function
 generate_data <-
@@ -310,8 +306,6 @@ job_results_gen <- function(N, n_obs, n_sub, Sigma, means, exp_type){
 }
 
 ####~~~~~~~~~~~~~~#Results Matrix Reconfiguration Functions#~~~~~~~~~~~~~~~~~~####
-
-
 ####Data Analysis####
 #outputs 1-6 ranked least to greatest for each IC
 data_analysis <- function(results){
