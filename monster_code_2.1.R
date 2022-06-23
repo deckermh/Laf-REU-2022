@@ -207,18 +207,18 @@ fit_data <- function(clean_data, n_obs, n_sub) {
   ARH1fit_BIC = summary(ARH1fit)$BIC
   SIMfit_BIC = summary(SIMfit)$BIC
   
-  CSfit_AICc = summary(CSfit)$AIC + (2 * (n_obs)) * (n_obs + 1) / (n_sub - n_obs -
-                                                                     1)
-  AR1fit_AICc = summary(AR1fit)$AIC + (2 * (n_obs)) * (n_obs + 1) / (n_sub - n_obs -
-                                                                       1)
-  UNfit_AICc = summary(UNfit)$AIC + (2 * (n_obs)) * (n_obs + 1) / (n_sub - n_obs -
-                                                                     1)
-  CSHfit_AICc = summary(CSHfit)$AIC + (2 * (n_obs)) * (n_obs + 1) / (n_sub - n_obs -
-                                                                       1)
-  ARH1fit_AICc = summary(ARH1fit)$AIC + (2 * (n_obs)) * (n_obs + 1) / (n_sub - n_obs -
-                                                                         1)
-  SIMfit_AICc = summary(SIMfit)$AIC + (2 * (n_obs)) * (n_obs + 1) / (n_sub - n_obs -
-                                                                       1)
+  CSfit_AICc = summary(CSfit)$AIC + (2 * (2)) * (2 + 1) / (n_sub - 2 -
+                                                             1)
+  AR1fit_AICc = summary(AR1fit)$AIC + (2 * (2)) * (2 + 1) / (n_sub - 2 -
+                                                               1)
+  UNfit_AICc = summary(UNfit)$AIC + (2 * (n_obs + choose(n_obs, 2))) * (n_obs + choose(n_obs, 2) + 1) / (n_sub - (n_obs + choose(n_obs, 2)) -
+                                                                                                           1)
+  CSHfit_AICc = summary(CSHfit)$AIC + (2 * (n_obs + 1)) * ((n_obs + 1)  + 1) / (n_sub - ( n_obs + 1) -
+                                                                                  1)
+  ARH1fit_AICc = summary(ARH1fit)$AIC + (2 * (n_obs + 1)) * ((n_obs + 1)  + 1) / (n_sub - (n_obs + 1) -
+                                                                                    1)
+  SIMfit_AICc = summary(SIMfit)$AIC + (2 * (1)) * (1 + 1) / (n_sub - 1 -
+                                                               1)
   
   return (
     c(
