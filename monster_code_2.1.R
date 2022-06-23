@@ -480,9 +480,10 @@ quad_correct <- function(diff_matrix, thumb){
 }
 
 ####Distribution Gen Functions####
-AICDistribution <- function(N, n_subs, Sigma, means) {
+AICDistribution_manual <- function(N, n_subs, Sigma, means) {
   #matrix with AIC scores for different fits as columns
   AIC_scores = matrix(nrow = N, ncol = 6)
+  names = c("Unstructured", "Simple", "CS", "AR1", "CSH", "ARH1")
   
   #for each row in AIC_scores...
   for (i in 1:N) {
@@ -511,13 +512,14 @@ AICDistribution <- function(N, n_subs, Sigma, means) {
   
   #histogram each column
   for (i in 1:6) {
-    hist(AIC_scores[, i])
+    hist(AIC_scores[, i], xlab = paste("AIC values for", names[i], sep = " "), main = paste("Distribution of AIC", names[i], "Values", sep = " "))
   }
 }
 
-AICcDistribution <- function(N, n_subs, Sigma, means) {
+AICcDistribution_manual <- function(N, n_subs, Sigma, means) {
   #matrix with AICc scores for different fits as columns
   AICc_scores = matrix(nrow = N, ncol = 6)
+  names = c("Unstructured", "Simple", "CS", "AR1", "CSH", "ARH1")
   
   #for each row in AICc_scores...
   for (i in 1:N) {
@@ -546,13 +548,14 @@ AICcDistribution <- function(N, n_subs, Sigma, means) {
   
   #histogram each column
   for (i in 1:6) {
-    hist(AICc_scores[, i])
+    hist(AICc_scores[, i], xlab = paste("AICc values for", names[i], sep = " "), main = paste("Distribution of AICc", names[i], "Values", sep = " "))
   }
 }
 
-BICDistribution <- function(N, n_subs, Sigma, means) {
+BICDistribution_manual <- function(N, n_subs, Sigma, means) {
   #matrix with BIC scores for different fits as columns
   BIC_scores = matrix(nrow = N, ncol = 6)
+  names = c("Unstructured", "Simple", "CS", "AR1", "CSH", "ARH1")
   
   #for each row in BIC_scores...
   for (i in 1:N) {
@@ -581,12 +584,13 @@ BICDistribution <- function(N, n_subs, Sigma, means) {
   
   #histogram each column
   for (i in 1:6) {
-    hist(BIC_scores[, i])
+    hist(BIC_scores[, i], xlab = paste("BIC values for", names[i], sep = " "), main = paste("Distribution of BIC", names[i], "Values", sep = " "))
   }
 }
 
 AICDistribution <- function(results) {
   N = dim(results)[1]
+  names = c("Unstructured", "Simple", "CS", "AR1", "CSH", "ARH1")
   
   AICMatrix = matrix(nrow = N, ncol = 6)
   for (i in 1:N) {
@@ -599,12 +603,13 @@ AICDistribution <- function(results) {
   
   #histogram each column
   for (i in 1:6) {
-    hist(AICMatrix[, i])
+    hist(AICMatrix[, i], xlab = paste("AIC values for", names[i], sep = " "), main = paste("Distribution of AIC", names[i], "Values", sep = " "))
   }
 }
 
 AICcDistribution <- function(results) {
   N = dim(results)[1]
+  names = c("Unstructured", "Simple", "CS", "AR1", "CSH", "ARH1")
   
   AICcMatrix = matrix(nrow = N, ncol = 6)
   for (i in 1:N) {
@@ -617,12 +622,13 @@ AICcDistribution <- function(results) {
   
   #histogram each column
   for (i in 1:6) {
-    hist(AICcMatrix[, i])
+    hist(AICcMatrix[, i], xlab = paste("AICc values for", names[i], sep = " "), main = paste("Distribution of AICc", names[i], "Values", sep = " "))
   }
 }
 
 BICDistribution <- function(results) {
   N = dim(results)[1]
+  names = c("Unstructured", "Simple", "CS", "AR1", "CSH", "ARH1")
   
   BICMatrix = matrix(nrow = N, ncol = 6)
   for (i in 1:N) {
@@ -635,7 +641,7 @@ BICDistribution <- function(results) {
   
   #histogram each column
   for (i in 1:6) {
-    hist(BICMatrix[, i])
+    hist(BICMatrix[, i], xlab = paste("BIC values for", names[i], sep = " "), main = paste("Distribution of BIC", names[i], "Values", sep = " "))
   }
 }
 
