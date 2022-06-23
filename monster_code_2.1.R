@@ -647,4 +647,16 @@ BICDistribution <- function(results) {
 
 
 
+AICDifferenceHistograms_VaryingRho <- function() {
+  AIC_UN_Data = matrix(nrow = 100, ncol = 10)
+  for (i in 0:9) {
+    Sigma = makeCS(3, i / 10, 1.2)
+    res = results_matrix(100, 3, 40, Sigma, c(0, 0, 0))
+    differences = diff(res, 7)
+    AIC_UN_Data[, i+1] = differences[, 1]
+  }
+  
+  boxplot(AIC_UN_Data[,1:10])
+  
+}
 
