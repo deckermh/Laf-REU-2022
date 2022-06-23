@@ -7,10 +7,10 @@ quad_correct <- function(diff_matrix, thumb){
   
   for (i in 1:18){
     
-    count_1 = 0
-    count_2 = 0
-    count_3 = 0
-    count_4 = 0
+    count_1 = 0        ##Right structure selected, not significant
+    count_2 = 0        ##Wrong structure selected, not significant
+    count_3 = 0        ##Wrong structure selected, Significant
+    count_4 = 0        ##Right structure selected, significant
     
     for (j in 1:N){
       
