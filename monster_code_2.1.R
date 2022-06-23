@@ -656,7 +656,6 @@ AICDifferenceHistograms_VaryingRho <- function() {
     AIC_UN_Data[, i+1] = differences[, 1]
   }
   
-  boxplot(AIC_UN_Data[,1:10])
-  
+  boxplot(AIC_UN_Data[,1:10], main = "AIC_UN - AIC_CS")
 }
 
