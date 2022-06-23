@@ -286,6 +286,7 @@ results_matrix <- function(N, n_obs, n_sub, Sigma, means) {
 
 ####Final Results Matrix Gen Function to Send to Job####
 job_results_gen <- function(N, n_obs, n_sub, Sigma, means, exp_type){
+  ##exp type is a string e.g. "CS"
   res = results_matrix(N, n_obs, n_sub, Sigma, means)
   
   means_string = "means"
