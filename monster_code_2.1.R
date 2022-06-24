@@ -488,7 +488,7 @@ quad_correct <- function(diff_matrix, thumb){
   return(quad_matrix)
 }
 
-####Distribution Gen Functions####
+####Distribution Histogram Gen Functions####
 AICDistribution_manual <- function(N, n_subs, Sigma, means) {
   #matrix with AIC scores for different fits as columns
   AIC_scores = matrix(nrow = N, ncol = 6)
@@ -654,8 +654,7 @@ BICDistribution <- function(results) {
   }
 }
 
-
-
+####Boxplots of Varied Rho####
 AICDifferenceHistograms_VaryingRho <- function() {
   AIC_UN_Data = matrix(nrow = 100, ncol = 10)
   for (i in 0:9) {
