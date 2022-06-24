@@ -4,28 +4,24 @@
 ##
 #Make a CSH matrix
 ##
-makeCSH <- function(n, sigmas, rho) {
-  if (n != length(sigmas)) {
+makeCSH <- function(n, p, sigma) {
+  if (n != length(sigma)) {
     return(NULL)
   }
   
-  data = array(dim = c(n, n))
+  data = matrix(0, n, n)
   for (i in 1:n) {
     for (j in 1:n) {
       if (i == j) {
-        data[i, j] = sigmas[i] * sigmas[j]
+        data[i, j] = sigma[i]*sigma[j]
       }
       else {
-        data[i, j] = rho * sigmas[i] * sigmas[j]
+        data[i, j] = p*sigma[i]*sigma[j]
       }
     }
   }
-  result = matrix(data,
-                  nrow = n,
-                  ncol = n,
-                  byrow = T)
-  
-  return(result)
+
+  return(data)
 }
 
 ##
@@ -285,9 +281,11 @@ results_matrix <- function(N, n_obs, n_sub, Sigma, means) {
 }
 
 ####~~~~~~~~~~~~~~#Data Gen and Collection#~~~~~~~~~~~~~~~~~~####
-####Final Results Matrix Gen Function to Send to Job####
-job_results_gen <- function(N, n_obs, n_sub, Sigma, means, exp_type){
+####Manual (generate your own Sigma) Results Matrix Gen Function to Send to Job####
+job_results_gen_manual <- function(N, n_obs, n_sub, Sigma, p, sigma, means, exp_type){
   ##exp type is a string e.g. "CS"
+  ##p is a string e.g "(.4, .7, .8)"
+  ##sigma is also a string e.g "(1, 1, 1)"
   res = results_matrix(N, n_obs, n_sub, Sigma, means)
   
   means_string = "means"
@@ -295,11 +293,55 @@ job_results_gen <- function(N, n_obs, n_sub, Sigma, means, exp_type){
     means_string = paste(means_string, mean, sep = "_")
   }
   
-  file_name = paste("N", N, "obs", n_obs, "sub", n_sub, exp_type, means_string, sep = "_")
+  file_name = paste("N", N, "obs", n_obs, "sub", n_sub, exp_type, "p", p, "sigma", sigma, means_string, sep = "_")
   file_name = paste(file_name, ".csv", sep = "")
   write.csv(res, file_name)
   return(file_name)
 }
+
+####Job Results Gen w/ Sigma Gen Built In####
+job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means){
+  ##exp type is a string e.g. "CS"
+  ##sigma, and means should be vector type e.g. c(1, 2, 3) or c(1)
+  ##for SIM, p = 0
+  
+  if (exp_type == "UN"){
+    print("Do manually with job_results_gen_manual")
+  }
+  else if (exp_type == "SIM"){
+    Sigma = matrix(0, n_obs, n_obs) + diag(sigma_vect^2, n_obs)
+  }
+  else if (exp_type == "CS"){
+    Sigma = makeCS(n_obs, p, sigma_vect)
+  }
+  else if (exp_type == "AR1"){
+    Sigma = makeAR1(n_obs, p, sigma_vect)
+  }
+  else if (exp_type == "CSH"){
+    Sigma = makeCSH(n_obs, p, sigma_vect)
+  }
+  else if (exp_type == "ARH1"){
+    Sigma = makeARH1(n_obs, p, sigma_vect)
+  }
+  
+  res = results_matrix(N, n_obs, n_sub, Sigma, means)
+  
+  means_string = "means"
+  for (mean in means){
+    means_string = paste(means_string, mean, sep = "_")
+  }
+  
+  sigma_string = "sigma"
+  for (sigma in sigma_vect){
+    sigma_string = paste(sigma_string, sigma, sep = "_")
+  }
+  
+  file_name = paste("N", N, "obs", n_obs, "sub", n_sub, exp_type, sigma_string, "p", p, means_string, sep = "_")
+  file_name = paste(file_name, ".csv", sep = "")
+  write.csv(res, file_name)
+  return(file_name)
+}
+
 ####Data Retrieval Process Streamlined####
 data_retrieve <- function(file_name){
   ##note need to enter file name in quotes e.g. data_retrieve("file_name")
