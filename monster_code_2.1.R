@@ -731,3 +731,36 @@ AICRhoBoxplots <- function() {
   boxplot(AIC_ARH1_Data[,1:10], main = "AIC_ARH1 - AIC_CS")
 }
 
+####Makes boxplots for experiment shown in thesis####
+#section 6
+AICSigmaBoxplots <- function() {
+  AIC_UN_Data = matrix(nrow = 100, ncol = 10)
+  AIC_SIM_Data = matrix(nrow = 100, ncol = 10)
+  AIC_CS_Data = matrix(nrow = 100, ncol = 10)
+  AIC_AR1_Data = matrix(nrow = 100, ncol = 10)
+  AIC_CSH_Data = matrix(nrow = 100, ncol = 10)
+  AIC_ARH1_Data = matrix(nrow = 100, ncol = 10)
+  
+  #we vary sigma from 1 to 1.9. Rho = .5
+  for (i in 0:9) {
+    #these are the parameters detailed in section 6
+    Sigma = makeCS(3, .5, 1+i/10)
+    res = results_matrix(100, 3, 40, Sigma, c(0, 0, 0))
+    differences = diff(res, 7)
+    
+    AIC_UN_Data[, i+1] = differences[, 1]
+    AIC_SIM_Data[, i+1] = differences[, 4]
+    AIC_CS_Data[, i+1] = differences[, 7]
+    AIC_AR1_Data[, i+1] = differences[, 10]
+    AIC_CSH_Data[, i+1] = differences[, 13]
+    AIC_ARH1_Data[, i+1] = differences[, 16]
+  }
+  
+  #create boxplots
+  boxplot(AIC_UN_Data[,1:10], main = "AIC_UN - AIC_CS")
+  boxplot(AIC_SIM_Data[,1:10], main = "AIC_SIM - AIC_CS")
+  boxplot(AIC_CS_Data[,1:10], main = "AIC_CS - AIC_CS")
+  boxplot(AIC_AR1_Data[,1:10], main = "AIC_AR1 - AIC_CS")
+  boxplot(AIC_CSH_Data[,1:10], main = "AIC_CSH - AIC_CS")
+  boxplot(AIC_ARH1_Data[,1:10], main = "AIC_ARH1 - AIC_CS")
+}
