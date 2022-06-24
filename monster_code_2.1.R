@@ -284,6 +284,7 @@ results_matrix <- function(N, n_obs, n_sub, Sigma, means) {
   return(results)
 }
 
+####~~~~~~~~~~~~~~#Data Gen and Collection#~~~~~~~~~~~~~~~~~~####
 ####Final Results Matrix Gen Function to Send to Job####
 job_results_gen <- function(N, n_obs, n_sub, Sigma, means, exp_type){
   ##exp type is a string e.g. "CS"
@@ -298,6 +299,14 @@ job_results_gen <- function(N, n_obs, n_sub, Sigma, means, exp_type){
   file_name = paste(file_name, ".csv", sep = "")
   write.csv(res, file_name)
   return(file_name)
+}
+####Data Retrieval Process Streamlined####
+data_retrieve <- function(file_name){
+  ##note need to enter file name in quotes e.g. data_retrieve("file_name")
+  data = read.csv(file_name, header = TRUE)
+  data = as.matrix(data)
+  data = data[,2:19]
+  return(data)
 }
 
 ####~~~~~~~~~~~~~~#Data Analysis Functions#~~~~~~~~~~~~~~~~~~####
@@ -479,7 +488,7 @@ quad_correct <- function(diff_matrix, thumb){
   return(quad_matrix)
 }
 
-####Distribution Gen Functions####
+####Distribution Histogram Gen Functions####
 AICDistribution_manual <- function(N, n_subs, Sigma, means) {
   #matrix with AIC scores for different fits as columns
   AIC_scores = matrix(nrow = N, ncol = 6)
