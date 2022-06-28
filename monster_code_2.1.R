@@ -697,7 +697,7 @@ BICDistribution <- function(results) {
 }
 
 
-####Makes Box Plots for Experiment Shown in Thesis####
+####Makes Box Plots for Experiment Shown in Thesis (RHO)####
 #section 6
 AICRhoBoxplots <- function() {
   AIC_UN_Data = matrix(nrow = 100, ncol = 10)
@@ -731,7 +731,7 @@ AICRhoBoxplots <- function() {
   boxplot(AIC_ARH1_Data[,1:10], main = "AIC_ARH1 - AIC_CS")
 }
 
-####Makes boxplots for experiment shown in thesis####
+####Makes Box Plots for Experiment Shown in Thesis (SIGMA)####
 #section 6
 AICSigmaBoxplots <- function() {
   AIC_UN_Data = matrix(nrow = 100, ncol = 10)
