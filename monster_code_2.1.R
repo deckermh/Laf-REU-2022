@@ -432,6 +432,8 @@ data_analysis <- function(results){
 diff <- function(results, exp_col_num_AIC) {
   
   #@param exp_col_num_AIC: represents column index of AIC_[FIT]
+  #competitor-truth
+  #so want positive
   #can be 1 (UN), 4 (SIM), 7 (CS), 10 (AR1), 13 (CSH), 16 (ARH1)
   
   N = dim(results)[1]
@@ -769,11 +771,16 @@ AICSigmaBoxplots <- function() {
 overlap_histograms <- function(data, exp_col_num_AIC){
   ##generates 5 double histograms for each IC which compare expected type
   ##distribution to each other distribution
+  ##outputs as a pdf called "dataname_histograms.pdf"
   
   dataset = deparse(substitute(data))
   
   c1 <- rgb(173,216,230,max = 255, alpha = 80, names = "lt.blue")
   c2 <- rgb(255,192,203, max = 255, alpha = 80, names = "lt.pink")
+  
+  pdf(file=paste(dataset, "_", "histograms", ".pdf", sep = ""))
+  
+  layout(mat = matrix(c(1, 2, 3, 4, 5, 0), nrow = 3, ncol = 2))
   
   ###AIC###
   AIC_cols = c(1, 4, 7, 10, 13, 16)
@@ -839,5 +846,5 @@ overlap_histograms <- function(data, exp_col_num_AIC){
       
     }
   }
-  
+  dev.off()
 }

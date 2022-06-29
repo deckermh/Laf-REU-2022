@@ -7,6 +7,10 @@ overlap_histograms <- function(data, exp_col_num_AIC){
   c1 <- rgb(173,216,230,max = 255, alpha = 80, names = "lt.blue")
   c2 <- rgb(255,192,203, max = 255, alpha = 80, names = "lt.pink")
   
+  pdf(file=paste(dataset, "_", "histograms", ".pdf", sep = ""))
+  
+  layout(mat = matrix(c(1, 2, 3, 4, 5, 0), nrow = 3, ncol = 2))
+  
   ###AIC###
   AIC_cols = c(1, 4, 7, 10, 13, 16)
   
@@ -71,5 +75,5 @@ overlap_histograms <- function(data, exp_col_num_AIC){
       
     }
   }
-  
+  dev.off()
 }
