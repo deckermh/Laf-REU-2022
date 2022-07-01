@@ -532,6 +532,36 @@ quad_correct <- function(diff_matrix, thumb){
   return(quad_matrix)
 }
 
+####Quad Correct Bar Plot Gen####
+quad_correct_graph <- function(quad_data){
+  ###outputs a pdf titled "(quad_data_name)_barplots.pdf"
+  
+  index = c(1,4,7,10,13,16)
+  all_names = colnames(quad_data)
+  
+  dataset = deparse(substitute(quad_data))
+  pdf(file=paste(dataset, "_", "barplots", ".pdf", sep = ""))
+  
+  layout(mat = matrix(c(1, 2, 3, 4, 5, 6), nrow = 3, ncol = 2))
+  
+  for (i in index){
+    names = c(all_names[i], all_names[i+1], all_names[i+2])
+    barplot(width = c(2), quad_data[1:4, c(i, (i+1),(i+2))], names.arg = names, col = c("khaki1", "royalblue1", "violetred1", "palegreen1"), ylim = c(0, 1.5))
+    legend("top", legend = c("Type 1", "Type 2", "Type 3", "Type 4"), fill = c("khaki1", "royalblue1", "violetred1", "palegreen1"), ncol = 4)
+  }
+  
+  
+  layout(mat = matrix(c(1, 2, 3), nrow = 3, ncol = 1))
+  
+  for (i in 1:3){
+    names = c(all_names[i], all_names[i+3], all_names[i+6], all_names[i+9], all_names[i+12], all_names[i+15])
+    barplot(width = c(2), quad_data[1:4, c(i, (i+3),(i+6),(i+9),(i+12),(i+15))], names.arg = names, col = c("khaki1", "royalblue1", "violetred1", "palegreen1"), ylim = c(0, 1.5))
+    legend("top", legend = c("Type 1", "Type 2", "Type 3", "Type 4"), fill = c("khaki1", "royalblue1", "violetred1", "palegreen1"), ncol = 4)
+  }
+  
+  dev.off()
+  
+}
 ####Distribution Histogram Gen Functions####
 AICDistribution_manual <- function(N, n_subs, Sigma, means) {
   #matrix with AIC scores for different fits as columns
