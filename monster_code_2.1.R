@@ -162,7 +162,7 @@ fit_data <- function(clean_data, n_obs, n_sub) {
   #Unstructured
   ##
   UNfit = gls(observation ~ time, corr = corSymm(form = ~ 1 |id),weights = varIdent(form = ~ 1 | time))
-  
+
   ##
   #Simple?
   ##
@@ -342,6 +342,79 @@ job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means){
   return(file_name)
 }
 
+####Line by Line Job Results Gen w/ Sigma Gen####
+line_job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means){
+  ##same as original job_results_gen but fills in csv one line at a time
+  ##to save completed trials that were done before a failed trial
+  ##the way it is written now it just overwrites the previous csv with new
+  ##matrix with a new row rather than appending, may need to change this later!!
+  
+  means_string = "means"
+  for (mean in means){
+    means_string = paste(means_string, mean, sep = "_")
+  }
+  
+  sigma_string = "sigma"
+  for (sigma in sigma_vect){
+    sigma_string = paste(sigma_string, sigma, sep = "_")
+  }
+  
+  results = matrix(0, N, 18)
+  colnames(results) = c(
+    "UNfit_AIC",
+    "UNfit_AICc",
+    "UNfit_BIC",
+    "SIMfit_AIC",
+    "SIMfit_AICc",
+    "SIMfit_BIC",
+    "CSfit_AIC",
+    "CSfit_AICc",
+    "CSfit_BIC",
+    "AR1fit_AIC",
+    "AR1fit_AICc",
+    "AR1fit_BIC",
+    "CSHfit_AIC",
+    "CSHfit_AICc",
+    "CSHfit_BIC",
+    "ARH1fit_AIC",
+    "ARH1fit_AICc",
+    "ARH1fit_BIC"
+  )
+  
+  file_name = paste("N", N, "obs", n_obs, "sub", n_sub, exp_type, sigma_string, "p", p, means_string, sep = "_")
+  file_name = paste(file_name, ".csv", sep = "")
+  
+  for (i in 1:N){
+    if (exp_type == "UN"){
+      print("Do manually with job_results_gen_manual")
+    }
+    else if (exp_type == "SIM"){
+      Sigma = matrix(0, n_obs, n_obs) + diag(sigma_vect^2, n_obs)
+    }
+    else if (exp_type == "CS"){
+      Sigma = makeCS(n_obs, p, sigma_vect)
+    }
+    else if (exp_type == "AR1"){
+      Sigma = makeAR1(n_obs, p, sigma_vect)
+    }
+    else if (exp_type == "CSH"){
+      Sigma = makeCSH(n_obs, p, sigma_vect)
+    }
+    else if (exp_type == "ARH1"){
+      Sigma = makeARH1(n_obs, p, sigma_vect)
+    }
+    
+    
+    clean_data = generate_data(n_obs, n_sub, Sigma, means)
+    res = fit_data(clean_data, n_obs, n_sub) 
+    
+    results[i,] = res
+    
+    write.csv(results, file_name)
+  }
+  
+  return(file_name)
+}
 ####Data Retrieval Process Streamlined####
 data_retrieve <- function(file_name){
   ##note need to enter file name in quotes e.g. data_retrieve("file_name")
