@@ -161,7 +161,7 @@ fit_data <- function(clean_data, n_obs, n_sub) {
   ##
   #Unstructured
   ##
-  UNfit = gls(observation ~ time, corr = corSymm(form = ~ 1 |id),weights = varIdent(form = ~ 1 | time))
+  UNfit = gls(observation ~ time, corr = corSymm(form = ~ 1 |id), weights = varIdent(form = ~ 1 | time))
 
   ##
   #Simple?
@@ -182,12 +182,12 @@ fit_data <- function(clean_data, n_obs, n_sub) {
   ##
   #CSH
   ##
-  CSHfit = gls(observation ~ time, corr = corCompSymm(form = ~ 1 |id),weights = varIdent(form = ~ 1 | time))
+  CSHfit = gls(observation ~ time, corr = corCompSymm(form = ~ 1 |id), weights = varIdent(form = ~ 1 | time))
   
   ##
   #ARH(1)
   ##
-  ARH1fit = gls(observation ~ time,corr = corAR1(form = ~ 1 |id),weights = varIdent(form = ~ 1 | time))
+  ARH1fit = gls(observation ~ time,corr = corAR1(form = ~ 1 |id), weights = varIdent(form = ~ 1 | time))
   
   CSfit_AIC = summary(CSfit)$AIC
   AR1fit_AIC = summary(AR1fit)$AIC
@@ -513,6 +513,9 @@ diff <- function(results, exp_col_num_AIC) {
   
   diff_matrix = matrix(nrow = N, ncol = dim(results)[2])
   
+  #set col names
+  colnames(diff_matrix) = colnames(results)
+  
   #for each row...
   for (i in 1:N) {
     currentRow = results[i,]
@@ -535,8 +538,8 @@ diff <- function(results, exp_col_num_AIC) {
     exp_value_AICc = results[i, exp_col_num_AICc]
     
     #for each AICc value...
-    for (j in seq(18, from = 2, by = 3)) {
-      diff_matrix[i,j] = currentRow[j] - exp_value_AICc
+    for (r in seq(18, from = 2, by = 3)) {
+      diff_matrix[i,r] = currentRow[r] - exp_value_AICc
     }
     
     ###BIC###
@@ -546,13 +549,11 @@ diff <- function(results, exp_col_num_AIC) {
     exp_value_BIC = results[i, exp_col_num_BIC]
     
     #for each BIC value
-    for (j in seq(18, from = 3, by = 3)) {
-      diff_matrix[i,j] = currentRow[j] - exp_value_BIC
+    for (k in seq(18, from = 3, by = 3)) {
+      diff_matrix[i,k] = currentRow[k] - exp_value_BIC
     }
   }
-  
-  #set col names
-  colnames(diff_matrix) = colnames(results)
+
   
   return (diff_matrix)
 }
@@ -978,13 +979,16 @@ overlap_histograms <- function(data, exp_col_num_AIC){
   }
   dev.off()
 }
-####Plot 3 and 4 as a Function of Rho####
-plot34_p <- function(data_list, p_vect, exp_col_num_AIC, thumb){
+####Plot 3 and 4 as a Function of a Desired Lever####
+plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
   ###data_list is a list(data1, data2, ... dataN) list of all sets of data of interest
   ###IMPORTANT ~ save ur data_list and name it before use in this function
   ###b/c this name is used to create the pdf file name
-  ###p_vect is a vect of the p studied e.g. p_vect = c(.1, .2, .3, .4, .5, .8)
-  ###plots lines for 3 and 4 as a function of p
+  ###x_vect_var_name examples ("sigma", "rho", etc.) this becomes the x lab of each plot
+  ###x_vect is a vect of the variable you want to plot the types 3 and 4 by
+  ###for example for varying p would input  x_vect = c(.1, .2, .3, .4, .5, .8)
+  ###which plots lines for 3 and 4 as a function of p
+  ###length of data_list and x_vect should be equal
   
   data_name = deparse(substitute(data_list))
   
@@ -1085,16 +1089,18 @@ plot34_p <- function(data_list, p_vect, exp_col_num_AIC, thumb){
     row_count = row_count + 1
   }
   
+  
+  
   ##
   #AIC PLOTS
   ##
   
   #Type3
   matplot(
-    p_vect,
+    x_vect,
     type3_data[, 1:6],
-    main = "Percentage of AIC Type 3 Results Varying Rho",
-    xlab = "rho",
+    main = paste("Percentage of AIC Type 3 Results Varying", x_vect_var_name, sep = " "),
+    xlab = x_vect_var_name,
     ylab = "Percentage",
     pch = 19,
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
@@ -1111,10 +1117,10 @@ plot34_p <- function(data_list, p_vect, exp_col_num_AIC, thumb){
   
   #Type4
   matplot(
-    p_vect,
+    x_vect,
     type4_data[, 1:6],
-    main = "Percentage of AIC Type 4 Results Varying Rho",
-    xlab = "rho",
+    main = paste("Percentage of AIC Type 4 Results Varying", x_vect_var_name, sep = " "),
+    xlab = x_vect_var_name,
     ylab = "Percentage",
     pch = 19,
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
@@ -1135,10 +1141,10 @@ plot34_p <- function(data_list, p_vect, exp_col_num_AIC, thumb){
   
   #Type3
   matplot(
-    p_vect,
+    x_vect,
     type3_data[, 7:12],
-    main = "Percentage of AICc Type 3 Results Varying Rho",
-    xlab = "rho",
+    main = paste("Percentage of AICc Type 3 Results Varying", x_vect_var_name, sep = " "),
+    xlab = x_vect_var_name,
     ylab = "Percentage",
     pch = 19,
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
@@ -1155,10 +1161,10 @@ plot34_p <- function(data_list, p_vect, exp_col_num_AIC, thumb){
   
   #Type4
   matplot(
-    p_vect,
+    x_vect,
     type4_data[, 7:12],
-    main = "Percentage of AICc Type 4 Results Varying Rho",
-    xlab = "rho",
+    main = paste("Percentage of AICc Type 4 Results Varying", x_vect_var_name, sep = " "),
+    xlab = x_vect_var_name,
     ylab = "Percentage",
     pch = 19,
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
@@ -1179,10 +1185,10 @@ plot34_p <- function(data_list, p_vect, exp_col_num_AIC, thumb){
   
   #Type3
   matplot(
-    p_vect,
+    x_vect,
     type3_data[, 13:18],
-    main = "Percentage of BIC Type 3 Results Varying Rho",
-    xlab = "rho",
+    main = paste("Percentage of BIC Type 3 Results Varying", x_vect_var_name, sep = " "),
+    xlab = x_vect_var_name,
     ylab = "Percentage",
     pch = 19,
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
@@ -1199,10 +1205,10 @@ plot34_p <- function(data_list, p_vect, exp_col_num_AIC, thumb){
   
   #Type4
   matplot(
-    p_vect,
+    x_vect,
     type4_data[, 13:18],
-    main = "Percentage of BIC Type 4 Results Varying Rho",
-    xlab = "rho",
+    main = paste("Percentage of BIC Type 4 Results Varying Rho", x_vect_var_name, sep = " "),
+    xlab = x_vect_var_name,
     ylab = "Percentage",
     pch = 19,
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
@@ -1219,3 +1225,4 @@ plot34_p <- function(data_list, p_vect, exp_col_num_AIC, thumb){
   
   dev.off()
 }
+
