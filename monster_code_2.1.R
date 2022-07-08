@@ -196,9 +196,6 @@ fit_data <- function(clean_data, n_obs, n_sub) {
   ARH1fit_AIC = summary(ARH1fit)$AIC
   SIMfit_AIC = summary(SIMfit)$AIC
   
-  print(summary(CSfit))
-  print(summary(AR1fit))
-  
   CSfit_BIC = summary(CSfit)$BIC
   AR1fit_BIC = summary(AR1fit)$BIC
   UNfit_BIC = summary(UNfit)$BIC
@@ -387,6 +384,8 @@ line_job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means
   file_name = paste("N", N, "obs", n_obs, "sub", n_sub, exp_type, sigma_string, "p", p, means_string, sep = "_")
   file_name = paste(file_name, ".csv", sep = "")
   
+  print(file_name)
+  
   for (i in 1:N){
     if (exp_type == "UN"){
       print("Do manually with job_results_gen_manual")
@@ -416,7 +415,8 @@ line_job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means
     write.csv(results, file_name)
   }
   
-  return(file_name)
+  placeholder = " "
+  return(placeholder)
 }
 ####Data Retrieval Process Streamlined####
 data_retrieve <- function(file_name){
