@@ -1242,8 +1242,7 @@ plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
     ncol = 3,
     cex = .6
   )
-  print(type3_data)
-  print(type4_data)
+  
   dev.off()
 }
 
