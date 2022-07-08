@@ -415,8 +415,6 @@ line_job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means
     write.csv(results, file_name)
   }
   
-  placeholder = " "
-  return(placeholder)
 }
 ####Data Retrieval Process Streamlined####
 data_retrieve <- function(file_name){
