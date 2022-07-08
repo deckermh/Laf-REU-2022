@@ -196,6 +196,9 @@ fit_data <- function(clean_data, n_obs, n_sub) {
   ARH1fit_AIC = summary(ARH1fit)$AIC
   SIMfit_AIC = summary(SIMfit)$AIC
   
+  print(summary(CSfit))
+  print(summary(AR1fit))
+  
   CSfit_BIC = summary(CSfit)$BIC
   AR1fit_BIC = summary(AR1fit)$BIC
   UNfit_BIC = summary(UNfit)$BIC
@@ -209,7 +212,7 @@ fit_data <- function(clean_data, n_obs, n_sub) {
                                                                1)
   UNfit_AICc = summary(UNfit)$AIC + (2 * (n_obs + choose(n_obs, 2))) * (n_obs + choose(n_obs, 2) + 1) / (n_sub - (n_obs + choose(n_obs, 2)) -
                                                                                                            1)
-  CSHfit_AICc = summary(CSHfit)$AIC + (2 * (n_obs + 1)) * ((n_obs + 1)  + 1) / (n_sub - ( n_obs + 1) -
+  CSHfit_AICc = summary(CSHfit)$AIC + (2 * (n_obs + 1)) * ((n_obs + 1)  + 1) / (n_sub - (n_obs + 1) -
                                                                                   1)
   ARH1fit_AICc = summary(ARH1fit)$AIC + (2 * (n_obs + 1)) * ((n_obs + 1)  + 1) / (n_sub - (n_obs + 1) -
                                                                                     1)
@@ -433,7 +436,9 @@ data_analysis <- function(results){
   count_IC = dimension[2]
   
   sorted_results = matrix(0, N, 18)
-  colnames(sorted_results) = c(paste("AIC", 1:6, sep = "_"), paste("AICc", 1:6, sep = "_"), paste("BIC", 1:6, sep = "_"))
+  colnames(sorted_results) = c(paste("AIC", 1:6, sep = "_"),
+                               paste("AICc", 1:6, sep = "_"),
+                               paste("BIC", 1:6, sep = "_"))
   
   
   for (i in 1:N){
@@ -924,9 +929,14 @@ overlap_histograms <- function(data, exp_col_num_AIC){
       breakpoints = pretty(min:max, n = 25)
       names = colnames(data)
       
-      hist1 = hist(data[,exp_col_num_AIC], breaks = breakpoints, plot = FALSE)
-      hist2 = hist(data[,col], breaks = breakpoints, plot = FALSE)
-      plot(hist1, xlab = paste("Blue:", names[exp_col_num_AIC], "Pink:", names[col], sep = " "), main = paste(dataset, "Visualization of AIC Comparison", sep = ": "), col = c1)
+      hist1 = hist(data[, exp_col_num_AIC], breaks = breakpoints, plot = FALSE)
+      hist2 = hist(data[, col], breaks = breakpoints, plot = FALSE)
+      plot(
+        hist1,
+        xlab = paste("Blue:", names[exp_col_num_AIC], "Pink:", names[col], sep = " "),
+        main = paste(dataset, "Visualization of AIC Comparison", sep = ": "),
+        col = c1
+      )
       plot(hist2, col = c2, add = TRUE)
     }
     else if (col == exp_col_num_AIC){
@@ -946,9 +956,14 @@ overlap_histograms <- function(data, exp_col_num_AIC){
       breakpoints = pretty(min:max, n = 25)
       names = colnames(data)
       
-      hist1 = hist(data[,exp_col_num_AICc], breaks = breakpoints, plot = FALSE)
-      hist2 = hist(data[,col], breaks = breakpoints, plot = FALSE)
-      plot(hist1, xlab = paste("Blue:", names[exp_col_num_AICc], "Pink:", names[col], sep = " "), main = paste(dataset, "Visualization of AICc Comparison", sep = ": "), col = c1)
+      hist1 = hist(data[, exp_col_num_AICc], breaks = breakpoints, plot = FALSE)
+      hist2 = hist(data[, col], breaks = breakpoints, plot = FALSE)
+      plot(
+        hist1,
+        xlab = paste("Blue:", names[exp_col_num_AICc], "Pink:", names[col], sep = " "),
+        main = paste(dataset, "Visualization of AICc Comparison", sep = ": "),
+        col = c1
+      )
       plot(hist2, col = c2, add = TRUE)
     }
     else if (col == exp_col_num_AICc){
@@ -968,9 +983,14 @@ overlap_histograms <- function(data, exp_col_num_AIC){
       breakpoints = pretty(min:max, n = 25)
       names = colnames(data)
       
-      hist1 = hist(data[,exp_col_num_BIC], breaks = breakpoints, plot = FALSE)
-      hist2 = hist(data[,col], breaks = breakpoints, plot = FALSE)
-      plot(hist1, xlab = paste("Blue:", names[exp_col_num_BIC], "Pink:", names[col], sep = " "), main = paste(dataset, "Visualization of BIC Comparison", sep = ": "), col = c1)
+      hist1 = hist(data[, exp_col_num_BIC], breaks = breakpoints, plot = FALSE)
+      hist2 = hist(data[, col], breaks = breakpoints, plot = FALSE)
+      plot(
+        hist1,
+        xlab = paste("Blue:", names[exp_col_num_BIC], "Pink:", names[col], sep = " "),
+        main = paste(dataset, "Visualization of BIC Comparison", sep = ": "),
+        col = c1
+      )
       plot(hist2, col = c2, add = TRUE)
     }
     else if (col == exp_col_num_BIC){
@@ -1029,7 +1049,7 @@ plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
   for (data in data_list){
     diff = diff(data, exp_col_num_AIC)
     quad = quad_correct(diff, thumb)
-    
+
     ##
     #type 3
     ##
@@ -1222,7 +1242,12 @@ plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
     ncol = 3,
     cex = .6
   )
-  
+  print(type3_data)
+  print(type4_data)
   dev.off()
 }
+
+
+
+
 
