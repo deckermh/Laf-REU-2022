@@ -161,8 +161,8 @@ fit_data <- function(clean_data, n_obs, n_sub) {
   ##
   #Unstructured
   ##
-  UNfit = gls(observation ~ time, corr = corSymm(form = ~ 1 |id),weights = varIdent(form = ~ 1 | time))
-  
+  UNfit = gls(observation ~ time, corr = corSymm(form = ~ 1 |id), weights = varIdent(form = ~ 1 | time))
+
   ##
   #Simple?
   ##
@@ -182,12 +182,12 @@ fit_data <- function(clean_data, n_obs, n_sub) {
   ##
   #CSH
   ##
-  CSHfit = gls(observation ~ time, corr = corCompSymm(form = ~ 1 |id),weights = varIdent(form = ~ 1 | time))
+  CSHfit = gls(observation ~ time, corr = corCompSymm(form = ~ 1 |id), weights = varIdent(form = ~ 1 | time))
   
   ##
   #ARH(1)
   ##
-  ARH1fit = gls(observation ~ time,corr = corAR1(form = ~ 1 |id),weights = varIdent(form = ~ 1 | time))
+  ARH1fit = gls(observation ~ time,corr = corAR1(form = ~ 1 |id), weights = varIdent(form = ~ 1 | time))
   
   CSfit_AIC = summary(CSfit)$AIC
   AR1fit_AIC = summary(AR1fit)$AIC
@@ -203,17 +203,17 @@ fit_data <- function(clean_data, n_obs, n_sub) {
   ARH1fit_BIC = summary(ARH1fit)$BIC
   SIMfit_BIC = summary(SIMfit)$BIC
   
-  CSfit_AICc = summary(CSfit)$AIC + (2 * (2)) * (2 + 1) / (n_sub - 2 -
+  CSfit_AICc = summary(CSfit)$AIC + (2 * (2)) * (2 + 1) / ((n_sub*n_obs) - 2 -
                                                              1)
-  AR1fit_AICc = summary(AR1fit)$AIC + (2 * (2)) * (2 + 1) / (n_sub - 2 -
+  AR1fit_AICc = summary(AR1fit)$AIC + (2 * (2)) * (2 + 1) / ((n_sub*n_obs) - 2 -
                                                                1)
-  UNfit_AICc = summary(UNfit)$AIC + (2 * (n_obs + choose(n_obs, 2))) * (n_obs + choose(n_obs, 2) + 1) / (n_sub - (n_obs + choose(n_obs, 2)) -
+  UNfit_AICc = summary(UNfit)$AIC + (2 * (n_obs + choose(n_obs, 2))) * (n_obs + choose(n_obs, 2) + 1) / ((n_sub*n_obs) - (n_obs + choose(n_obs, 2)) -
                                                                                                            1)
-  CSHfit_AICc = summary(CSHfit)$AIC + (2 * (n_obs + 1)) * ((n_obs + 1)  + 1) / (n_sub - ( n_obs + 1) -
+  CSHfit_AICc = summary(CSHfit)$AIC + (2 * (n_obs + 1)) * ((n_obs + 1)  + 1) / ((n_sub*n_obs) - (n_obs + 1) -
                                                                                   1)
-  ARH1fit_AICc = summary(ARH1fit)$AIC + (2 * (n_obs + 1)) * ((n_obs + 1)  + 1) / (n_sub - (n_obs + 1) -
+  ARH1fit_AICc = summary(ARH1fit)$AIC + (2 * (n_obs + 1)) * ((n_obs + 1)  + 1) / ((n_sub*n_obs) - (n_obs + 1) -
                                                                                     1)
-  SIMfit_AICc = summary(SIMfit)$AIC + (2 * (1)) * (1 + 1) / (n_sub - 1 -
+  SIMfit_AICc = summary(SIMfit)$AIC + (2 * (1)) * (1 + 1) / ((n_sub*n_obs) - 1 -
                                                                1)
   
   return (
@@ -342,6 +342,80 @@ job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means){
   return(file_name)
 }
 
+####Line by Line Job Results Gen w/ Sigma Gen####
+line_job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means){
+  ##same as original job_results_gen but fills in csv one line at a time
+  ##to save completed trials that were done before a failed trial
+  ##the way it is written now it just overwrites the previous csv with new
+  ##matrix with a new row rather than appending, may need to change this later!!
+  
+  means_string = "means"
+  for (mean in means){
+    means_string = paste(means_string, mean, sep = "_")
+  }
+  
+  sigma_string = "sigma"
+  for (sigma in sigma_vect){
+    sigma_string = paste(sigma_string, sigma, sep = "_")
+  }
+  
+  results = matrix(0, N, 18)
+  colnames(results) = c(
+    "UNfit_AIC",
+    "UNfit_AICc",
+    "UNfit_BIC",
+    "SIMfit_AIC",
+    "SIMfit_AICc",
+    "SIMfit_BIC",
+    "CSfit_AIC",
+    "CSfit_AICc",
+    "CSfit_BIC",
+    "AR1fit_AIC",
+    "AR1fit_AICc",
+    "AR1fit_BIC",
+    "CSHfit_AIC",
+    "CSHfit_AICc",
+    "CSHfit_BIC",
+    "ARH1fit_AIC",
+    "ARH1fit_AICc",
+    "ARH1fit_BIC"
+  )
+  
+  file_name = paste("N", N, "obs", n_obs, "sub", n_sub, exp_type, sigma_string, "p", p, means_string, sep = "_")
+  file_name = paste(file_name, ".csv", sep = "")
+  
+  print(file_name)
+  
+  for (i in 1:N){
+    if (exp_type == "UN"){
+      print("Do manually with job_results_gen_manual")
+    }
+    else if (exp_type == "SIM"){
+      Sigma = matrix(0, n_obs, n_obs) + diag(sigma_vect^2, n_obs)
+    }
+    else if (exp_type == "CS"){
+      Sigma = makeCS(n_obs, p, sigma_vect)
+    }
+    else if (exp_type == "AR1"){
+      Sigma = makeAR1(n_obs, p, sigma_vect)
+    }
+    else if (exp_type == "CSH"){
+      Sigma = makeCSH(n_obs, p, sigma_vect)
+    }
+    else if (exp_type == "ARH1"){
+      Sigma = makeARH1(n_obs, p, sigma_vect)
+    }
+    
+    
+    clean_data = generate_data(n_obs, n_sub, Sigma, means)
+    res = fit_data(clean_data, n_obs, n_sub) 
+    
+    results[i,] = res
+    
+    write.csv(results, file_name)
+  }
+  
+}
 ####Data Retrieval Process Streamlined####
 data_retrieve <- function(file_name){
   ##note need to enter file name in quotes e.g. data_retrieve("file_name")
@@ -360,7 +434,9 @@ data_analysis <- function(results){
   count_IC = dimension[2]
   
   sorted_results = matrix(0, N, 18)
-  colnames(sorted_results) = c(paste("AIC", 1:6, sep = "_"), paste("AICc", 1:6, sep = "_"), paste("BIC", 1:6, sep = "_"))
+  colnames(sorted_results) = c(paste("AIC", 1:6, sep = "_"),
+                               paste("AICc", 1:6, sep = "_"),
+                               paste("BIC", 1:6, sep = "_"))
   
   
   for (i in 1:N){
@@ -440,6 +516,9 @@ diff <- function(results, exp_col_num_AIC) {
   
   diff_matrix = matrix(nrow = N, ncol = dim(results)[2])
   
+  #set col names
+  colnames(diff_matrix) = colnames(results)
+  
   #for each row...
   for (i in 1:N) {
     currentRow = results[i,]
@@ -462,8 +541,8 @@ diff <- function(results, exp_col_num_AIC) {
     exp_value_AICc = results[i, exp_col_num_AICc]
     
     #for each AICc value...
-    for (j in seq(18, from = 2, by = 3)) {
-      diff_matrix[i,j] = currentRow[j] - exp_value_AICc
+    for (r in seq(18, from = 2, by = 3)) {
+      diff_matrix[i,r] = currentRow[r] - exp_value_AICc
     }
     
     ###BIC###
@@ -473,13 +552,11 @@ diff <- function(results, exp_col_num_AIC) {
     exp_value_BIC = results[i, exp_col_num_BIC]
     
     #for each BIC value
-    for (j in seq(18, from = 3, by = 3)) {
-      diff_matrix[i,j] = currentRow[j] - exp_value_BIC
+    for (k in seq(18, from = 3, by = 3)) {
+      diff_matrix[i,k] = currentRow[k] - exp_value_BIC
     }
   }
-  
-  #set col names
-  colnames(diff_matrix) = colnames(results)
+
   
   return (diff_matrix)
 }
@@ -532,6 +609,63 @@ quad_correct <- function(diff_matrix, thumb){
   return(quad_matrix)
 }
 
+####Quad Correct Bar Plot Gen####
+quad_correct_graph <- function(quad_data){
+  ###outputs a pdf titled "(quad_data_name)_barplots.pdf"
+  
+  index = c(1,4,7,10,13,16)
+  all_names = colnames(quad_data)
+  
+  dataset = deparse(substitute(quad_data))
+  pdf(file=paste(dataset, "_", "barplots", ".pdf", sep = ""))
+  
+  layout(mat = matrix(c(1, 2, 3, 4, 5, 6), nrow = 3, ncol = 2))
+  
+  for (i in index){
+    names = c(all_names[i], all_names[i+1], all_names[i+2])
+    barplot(
+      width = c(2),
+      quad_data[1:4, c(i, (i + 1), (i + 2))],
+      names.arg = names,
+      col = c("khaki1", "royalblue1", "violetred1", "palegreen1"),
+      ylim = c(0, 1.5)
+    )
+    legend(
+      "top",
+      legend = c("Type 1", "Type 2", "Type 3", "Type 4"),
+      fill = c("khaki1", "royalblue1", "violetred1", "palegreen1"),
+      ncol = 4
+    )
+  }
+  
+  
+  layout(mat = matrix(c(1, 2, 3), nrow = 3, ncol = 1))
+  
+  for (i in 1:3){
+    names = c(all_names[i],
+              all_names[i + 3],
+              all_names[i + 6],
+              all_names[i + 9],
+              all_names[i + 12],
+              all_names[i + 15])
+    barplot(
+      width = c(2),
+      quad_data[1:4, c(i, (i + 3), (i + 6), (i + 9), (i + 12), (i + 15))],
+      names.arg = names,
+      col = c("khaki1", "royalblue1", "violetred1", "palegreen1"),
+      ylim = c(0, 1.5)
+    )
+    legend(
+      "top",
+      legend = c("Type 1", "Type 2", "Type 3", "Type 4"),
+      fill = c("khaki1", "royalblue1", "violetred1", "palegreen1"),
+      ncol = 4
+    )
+  }
+  
+  dev.off()
+  
+}
 ####Distribution Histogram Gen Functions####
 AICDistribution_manual <- function(N, n_subs, Sigma, means) {
   #matrix with AIC scores for different fits as columns
@@ -793,9 +927,14 @@ overlap_histograms <- function(data, exp_col_num_AIC){
       breakpoints = pretty(min:max, n = 25)
       names = colnames(data)
       
-      hist1 = hist(data[,exp_col_num_AIC], breaks = breakpoints, plot = FALSE)
-      hist2 = hist(data[,col], breaks = breakpoints, plot = FALSE)
-      plot(hist1, xlab = paste("Blue:", names[exp_col_num_AIC], "Pink:", names[col], sep = " "), main = paste(dataset, "Visualization of AIC Comparison", sep = ": "), col = c1)
+      hist1 = hist(data[, exp_col_num_AIC], breaks = breakpoints, plot = FALSE)
+      hist2 = hist(data[, col], breaks = breakpoints, plot = FALSE)
+      plot(
+        hist1,
+        xlab = paste("Blue:", names[exp_col_num_AIC], "Pink:", names[col], sep = " "),
+        main = paste(dataset, "Visualization of AIC Comparison", sep = ": "),
+        col = c1
+      )
       plot(hist2, col = c2, add = TRUE)
     }
     else if (col == exp_col_num_AIC){
@@ -815,9 +954,14 @@ overlap_histograms <- function(data, exp_col_num_AIC){
       breakpoints = pretty(min:max, n = 25)
       names = colnames(data)
       
-      hist1 = hist(data[,exp_col_num_AICc], breaks = breakpoints, plot = FALSE)
-      hist2 = hist(data[,col], breaks = breakpoints, plot = FALSE)
-      plot(hist1, xlab = paste("Blue:", names[exp_col_num_AICc], "Pink:", names[col], sep = " "), main = paste(dataset, "Visualization of AICc Comparison", sep = ": "), col = c1)
+      hist1 = hist(data[, exp_col_num_AICc], breaks = breakpoints, plot = FALSE)
+      hist2 = hist(data[, col], breaks = breakpoints, plot = FALSE)
+      plot(
+        hist1,
+        xlab = paste("Blue:", names[exp_col_num_AICc], "Pink:", names[col], sep = " "),
+        main = paste(dataset, "Visualization of AICc Comparison", sep = ": "),
+        col = c1
+      )
       plot(hist2, col = c2, add = TRUE)
     }
     else if (col == exp_col_num_AICc){
@@ -837,9 +981,14 @@ overlap_histograms <- function(data, exp_col_num_AIC){
       breakpoints = pretty(min:max, n = 25)
       names = colnames(data)
       
-      hist1 = hist(data[,exp_col_num_BIC], breaks = breakpoints, plot = FALSE)
-      hist2 = hist(data[,col], breaks = breakpoints, plot = FALSE)
-      plot(hist1, xlab = paste("Blue:", names[exp_col_num_BIC], "Pink:", names[col], sep = " "), main = paste(dataset, "Visualization of BIC Comparison", sep = ": "), col = c1)
+      hist1 = hist(data[, exp_col_num_BIC], breaks = breakpoints, plot = FALSE)
+      hist2 = hist(data[, col], breaks = breakpoints, plot = FALSE)
+      plot(
+        hist1,
+        xlab = paste("Blue:", names[exp_col_num_BIC], "Pink:", names[col], sep = " "),
+        main = paste(dataset, "Visualization of BIC Comparison", sep = ": "),
+        col = c1
+      )
       plot(hist2, col = c2, add = TRUE)
     }
     else if (col == exp_col_num_BIC){
@@ -848,3 +997,254 @@ overlap_histograms <- function(data, exp_col_num_AIC){
   }
   dev.off()
 }
+####Plot 3 and 4 as a Function of a Desired Lever####
+plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
+  ###data_list is a list(data1, data2, ... dataN) list of all sets of data of interest
+  ###IMPORTANT ~ save ur data_list and name it before use in this function
+  ###b/c this name is used to create the pdf file name
+  ###x_vect_var_name examples ("sigma", "rho", etc.) this becomes the x lab of each plot
+  ###x_vect is a vect of the variable you want to plot the types 3 and 4 by
+  ###for example for varying p would input  x_vect = c(.1, .2, .3, .4, .5, .8)
+  ###which plots lines for 3 and 4 as a function of p
+  ###length of data_list and x_vect should be equal
+  
+  data_name = deparse(substitute(data_list))
+  
+  pdf(file=paste(data_name, "_", "type34", ".pdf", sep = ""))
+  layout(mat = matrix(c(1, 3, 5, 2, 4, 6), nrow = 3, ncol = 2))
+  
+  len = length(data_list)
+  
+  #AIC_col = c(1, 4, 7, 10, 13, 16)
+  
+  ###rows of these matrices will go top to bottom p = .1, .2, ... , .5, .8
+  type3_data = matrix(0, len, 18)
+  colnames(type3_data) = c(
+    "AIC_UN",
+    "AIC_SIM",
+    "AIC_CS",
+    "AIC_AR1",
+    "AIC_CSH",
+    "AIC_ARH1",
+    "AICc_UN",
+    "AICc_SIM",
+    "AICc_CS",
+    "AICc_AR1",
+    "AICc_CSH",
+    "AICc_ARH1",
+    "BIC_UN",
+    "BIC_SIM",
+    "BIC_CS",
+    "BIC_AR1",
+    "BIC_CSH",
+    "BIC_ARH1"
+  )
+  
+  type4_data = matrix(0, len, 18)
+  colnames(type4_data) = colnames(type3_data)
+  
+  row_count = 1
+  for (data in data_list){
+    diff = diff(data, exp_col_num_AIC)
+    quad = quad_correct(diff, thumb)
+
+    ##
+    #type 3
+    ##
+    
+    #AIC
+    type3_data[row_count, 1] = quad[3, 1]
+    type3_data[row_count, 2] = quad[3, 4]
+    type3_data[row_count, 3] = quad[3, 7]
+    type3_data[row_count, 4] = quad[3, 10]
+    type3_data[row_count, 5] = quad[3, 13]
+    type3_data[row_count, 6] = quad[3, 16]
+    
+    #AICc
+    type3_data[row_count, 7] = quad[3, 2]
+    type3_data[row_count, 8] = quad[3, 5]
+    type3_data[row_count, 9] = quad[3, 8]
+    type3_data[row_count, 10] = quad[3, 11]
+    type3_data[row_count, 11] = quad[3, 14]
+    type3_data[row_count, 12] = quad[3, 17]
+    
+    #BIC
+    type3_data[row_count, 13] = quad[3, 3]
+    type3_data[row_count, 14] = quad[3, 6]
+    type3_data[row_count, 15] = quad[3, 9]
+    type3_data[row_count, 16] = quad[3, 12]
+    type3_data[row_count, 17] = quad[3, 15]
+    type3_data[row_count, 18] = quad[3, 18]
+    
+    ##
+    #type 4
+    ##
+    
+    #AIC
+    type4_data[row_count, 1] = quad[4, 1]
+    type4_data[row_count, 2] = quad[4, 4]
+    type4_data[row_count, 3] = quad[4, 7]
+    type4_data[row_count, 4] = quad[4, 10]
+    type4_data[row_count, 5] = quad[4, 13]
+    type4_data[row_count, 6] = quad[4, 16]
+    
+    #AICc
+    type4_data[row_count, 7] = quad[4, 2]
+    type4_data[row_count, 8] = quad[4, 5]
+    type4_data[row_count, 9] = quad[4, 8]
+    type4_data[row_count, 10] = quad[4, 11]
+    type4_data[row_count, 11] = quad[4, 14]
+    type4_data[row_count, 12] = quad[4, 17]
+    
+    #BIC
+    type4_data[row_count, 13] = quad[4, 3]
+    type4_data[row_count, 14] = quad[4, 6]
+    type4_data[row_count, 15] = quad[4, 9]
+    type4_data[row_count, 16] = quad[4, 12]
+    type4_data[row_count, 17] = quad[4, 15]
+    type4_data[row_count, 18] = quad[4, 18]
+    
+    row_count = row_count + 1
+  }
+  
+  
+  
+  ##
+  #AIC PLOTS
+  ##
+  
+  #Type3
+  matplot(
+    x_vect,
+    type3_data[, 1:6],
+    main = paste("Percentage of AIC Type 3 Results Varying", x_vect_var_name, sep = " "),
+    xlab = x_vect_var_name,
+    ylab = "Percentage",
+    pch = 19,
+    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    type = "b"
+  )
+  legend(
+    "topleft",
+    legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
+    fill = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    box.lty=0,
+    ncol = 3,
+    cex = .6
+  )
+  
+  #Type4
+  matplot(
+    x_vect,
+    type4_data[, 1:6],
+    main = paste("Percentage of AIC Type 4 Results Varying", x_vect_var_name, sep = " "),
+    xlab = x_vect_var_name,
+    ylab = "Percentage",
+    pch = 19,
+    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    type = "b"
+  )
+  legend(
+    "topleft",
+    legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
+    fill = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"), 
+    box.lty=0,
+    ncol = 3,
+    cex = .6
+  )
+  
+  ##
+  #AICc PLOTS
+  ##
+  
+  #Type3
+  matplot(
+    x_vect,
+    type3_data[, 7:12],
+    main = paste("Percentage of AICc Type 3 Results Varying", x_vect_var_name, sep = " "),
+    xlab = x_vect_var_name,
+    ylab = "Percentage",
+    pch = 19,
+    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    type = "b"
+  )
+  legend(
+    "topleft",
+    legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
+    fill = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    box.lty = 0,
+    ncol = 3,
+    cex = .6
+  )
+  
+  #Type4
+  matplot(
+    x_vect,
+    type4_data[, 7:12],
+    main = paste("Percentage of AICc Type 4 Results Varying", x_vect_var_name, sep = " "),
+    xlab = x_vect_var_name,
+    ylab = "Percentage",
+    pch = 19,
+    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    type = "b"
+  )
+  legend(
+    "topleft",
+    legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
+    fill = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"), 
+    box.lty=0,
+    ncol = 3,
+    cex = .6
+  )
+  
+  ##
+  #BIC PLOTS
+  ##
+  
+  #Type3
+  matplot(
+    x_vect,
+    type3_data[, 13:18],
+    main = paste("Percentage of BIC Type 3 Results Varying", x_vect_var_name, sep = " "),
+    xlab = x_vect_var_name,
+    ylab = "Percentage",
+    pch = 19,
+    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    type = "b"
+  )
+  legend(
+    "topleft",
+    legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
+    fill = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    box.lty=0,
+    ncol = 3,
+    cex = .6
+  )
+  
+  #Type4
+  matplot(
+    x_vect,
+    type4_data[, 13:18],
+    main = paste("Percentage of BIC Type 4 Results Varying Rho", x_vect_var_name, sep = " "),
+    xlab = x_vect_var_name,
+    ylab = "Percentage",
+    pch = 19,
+    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    type = "b"
+  )
+  legend(
+    "topleft",
+    legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
+    fill = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"), 
+    box.lty=0,
+    ncol = 3,
+    cex = .6
+  )
+  
+  dev.off()
+}
+
+
+
+
+
