@@ -37,10 +37,13 @@ for (i in 1:N) {
   write.csv(successRates, filename, row.names = FALSE)
 }
 
+N = 10
+thumb = 3
+
 #generate examples in 2.), varying the variance of variances
 for (i in 1:N) {
-  # 1,2,3 then 2,3,4 then 3,4,5 then...
-  sigmas = c(sqrt(1), sqrt(2+i/5), sqrt(3))
+  # 1,2,4 then 1,2.4,4 then 1,2.8,4 then...
+  sigmas = c(sqrt(1), sqrt(2+(i-1)*4/10), sqrt(10))
   
   #Note that the matrix is CSH (we could also do ARH1)
   Sigma = makeCSH(3, .5, sigmas)
@@ -53,7 +56,62 @@ for (i in 1:N) {
   successRates = quad_correct(differences, thumb)
   
   #writing file names and saving to csv tee hee
-  varOfVar = var(sigmas)
+  sigmasSquared = c(sigmas[1]^2, sigmas[2]^2, sigmas[3]^2)
+  varOfVar = var(sigmasSquared)
   filename = paste("quad_matrix_varying_variances/", varOfVar, ".csv")
+  write.csv(successRates, filename, row.names = FALSE)
+}
+
+
+
+
+n_obs = 3
+thumb = 3
+N = 10
+# Run experiment varying the min/max ratio from 1/10 to 1 in increments of 1/10
+for (i in 1:N) {
+  # 1,1,10 then 2,2,10 then 3,3,10 then...
+  sigmas = c(sqrt(i), sqrt(i), sqrt(10))
+  
+  #Note that the matrix is CSH (we could also do ARH1)
+  Sigma = makeCSH(3, .5, sigmas)
+  
+  res = results_matrix(100, 3, 10, Sigma, c(0,0,0))
+  
+  differences = diff(res, 13)
+  
+  #get success/failure rates
+  successRates = quad_correct(differences, thumb)
+  
+  #writing file names and saving to csv tee hee
+  ratio = sigmas[1]^2 / sigmas[3]^2
+  filename = paste("quad_matrix_varying_ratios/", ratio, ".csv")
+  write.csv(successRates, filename, row.names = FALSE)
+}
+
+
+
+
+n_obs = 3
+thumb = 3
+N = 10
+# Run experiment varying the min/max ratio from 1/10 to 1 in increments of 1/10
+for (i in 1:N) {
+  # 1,10,10 then 2,10,10 then 3,10,10 then... 10,10,10
+  sigmas = c(sqrt(i), sqrt(10), sqrt(10))
+  
+  #Note that the matrix is CSH (we could also do ARH1)
+  Sigma = makeCSH(3, .5, sigmas)
+  
+  res = results_matrix(100, 3, 10, Sigma, c(0,0,0))
+  
+  differences = diff(res, 13)
+  
+  #get success/failure rates
+  successRates = quad_correct(differences, thumb)
+  
+  #writing file names and saving to csv tee hee
+  ratio = sigmas[1]^2 / sigmas[3]^2
+  filename = paste("quad_matrix_varying_ratios/", ratio, ".csv")
   write.csv(successRates, filename, row.names = FALSE)
 }
