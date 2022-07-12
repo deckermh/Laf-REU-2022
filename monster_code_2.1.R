@@ -1231,7 +1231,7 @@ plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
   matplot(
     x_vect,
     type4_data[, 13:18],
-    main = paste("Percentage of BIC Type 4 Results Varying Rho", x_vect_var_name, sep = " "),
+    main = paste("Percentage of BIC Type 4 Results Varying", x_vect_var_name, sep = " "),
     xlab = x_vect_var_name,
     ylab = "Percentage",
     pch = 19,
