@@ -161,8 +161,14 @@ fit_data <- function(clean_data, n_obs, n_sub) {
   ##
   #Unstructured
   ##
-  UNfit = gls(observation ~ time, corr = corSymm(form = ~ 1 |id), weights = varIdent(form = ~ 1 | time))
-
+  UNfit = 0
+  if (UNfit == 0){
+    UNfit = try(gls(observation ~ time, corr = corSymm(form = ~ 1 |id), weights = varIdent(form = ~ 1 | time)), silent = TRUE)
+  }
+  else{
+    
+  }
+  
   ##
   #Simple?
   ##
