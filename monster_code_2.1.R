@@ -161,8 +161,14 @@ fit_data <- function(clean_data, n_obs, n_sub) {
   ##
   #Unstructured
   ##
-  UNfit = gls(observation ~ time, corr = corSymm(form = ~ 1 |id), weights = varIdent(form = ~ 1 | time))
-
+  UNfit = 0
+  if (UNfit == 0){
+    UNfit = try(gls(observation ~ time, corr = corSymm(form = ~ 1 |id), weights = varIdent(form = ~ 1 | time)), silent = TRUE)
+  }
+  else{
+    
+  }
+  
   ##
   #Simple?
   ##
@@ -1225,7 +1231,7 @@ plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
   matplot(
     x_vect,
     type4_data[, 13:18],
-    main = paste("Percentage of BIC Type 4 Results Varying Rho", x_vect_var_name, sep = " "),
+    main = paste("Percentage of BIC Type 4 Results Varying", x_vect_var_name, sep = " "),
     xlab = x_vect_var_name,
     ylab = "Percentage",
     pch = 19,
