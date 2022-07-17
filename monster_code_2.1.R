@@ -415,7 +415,7 @@ line_job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means
       },
       error = function(e){
         print(e)
-        row_counter = row_counter - 1
+        row_counter = row_counter - 2
       },
       finally = {row_counter = row_counter + 1}
     )
