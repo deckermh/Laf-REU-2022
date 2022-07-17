@@ -383,7 +383,6 @@ line_job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means
   
   write.csv(results, file_name)
   
-  ##add in len results make sure to append each success row to csv and rbind so that have len (or use a counter)
   row_counter = 0
   
   while(row_counter < N){
@@ -415,8 +414,6 @@ line_job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means
         results = rbind(results, res)
       },
       error = function(e){
-        # results[i,] = rep(0, 18)
-        # write.csv(results, file_name)
         print(e)
         row_counter = row_counter - 1
       },
