@@ -115,3 +115,37 @@ for (i in 1:N) {
   filename = paste("quad_matrix_varying_ratios/", ratio, ".csv")
   write.csv(successRates, filename, row.names = FALSE)
 }
+
+
+
+
+
+
+
+
+
+
+#make a plot of box plots for distribution of Type 4 success percentage in
+#in AIC_CS as heteroskedasticity increases
+AICHeteroBoxplots <- function() {
+  AIC_CS_Data = matrix(nrow = 100, ncol = 10)
+  
+  #we vary min/max ratio from .1 to .8
+  for (i in 1:8) {
+    #generate CSH matrix with varying levels of heterosked.
+    sigmas = c(sqrt(i/10), sqrt(10), sqrt(10))
+    Sigma = makeCSH(3, .5, sigmas)
+    
+    #get quad correct for data
+    res = results_matrix(100, 3, 40, Sigma, c(0, 0, 0))
+    d = diff(res, 13)
+    quad = quad_correct(d, 3)
+    
+    #get type 1, 2, 3, and 4 success/error percentages for CS fit
+    quad = quad[]
+    
+  }
+  
+  #create boxplots
+  boxplot(AIC_UN_Data[,1:10], main = "AIC_UN - AIC_CS")
+}

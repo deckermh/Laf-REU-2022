@@ -568,7 +568,7 @@ diff <- function(results, exp_col_num_AIC) {
 }
 
 ####Quad Correct Analysis####
-quad_correct <- function(diff_matrix, thumb){
+quad_correct <- function(diff_matrix, thumb, returnPercents = TRUE){
   N = dim(diff_matrix)[1]
   
   quad_matrix = matrix(0, 4, 18)
@@ -605,11 +605,18 @@ quad_correct <- function(diff_matrix, thumb){
       }
     }
     
-    quad_matrix[1, i] = count_1/N
-    quad_matrix[2, i] = count_2/N
-    quad_matrix[3, i] = count_3/N
-    quad_matrix[4, i] = count_4/N
-    
+    if (returnPercents) {
+      quad_matrix[1, i] = count_1/N
+      quad_matrix[2, i] = count_2/N
+      quad_matrix[3, i] = count_3/N
+      quad_matrix[4, i] = count_4/N
+    }
+    else {
+      quad_matrix[1, i] = count_1
+      quad_matrix[2, i] = count_2
+      quad_matrix[3, i] = count_3
+      quad_matrix[4, i] = count_4
+    }
   }
   
   return(quad_matrix)
