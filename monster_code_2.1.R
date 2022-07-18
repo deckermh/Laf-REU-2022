@@ -87,6 +87,180 @@ makeSymm <- function(matr) {
   }
   return(newMatrix)
 }
+#########Unstructured
+##obs 3##
+#########
+
+##MILD##
+#green
+matr = matrix(c(1, .5, .7,
+                0, 1, .55,
+                0, 0, 1), ncol = 3, nrow = 3, byrow = TRUE)
+mild_green3 = makeSymm(matr)
+#red
+matr = matrix(c(1, .5*sqrt(5), .7*sqrt(10),
+                0, 5, .55*sqrt(50),
+                0, 0, 10), ncol = 3, nrow = 3, byrow = TRUE)
+mild_red3 = makeSymm(matr)
+
+##MEDIUM##
+#green
+matr = matrix(c(1, .5, .7,
+                0, 1, .55,
+                0, 0, 1), ncol = 3, nrow = 3, byrow = TRUE)
+med_green3 = makeSymm(matr)
+#red
+matr = matrix(c(1, .5*sqrt(5), .7*sqrt(10),
+                0, 5, .55*sqrt(50),
+                0, 0, 10), ncol = 3, nrow = 3, byrow = TRUE)
+med_red3 = makeSymm(matr)
+
+##SPICY##
+#green
+matr = matrix(c(1, .9, 0,
+                0, 1, .5,
+                0, 0, 1), ncol = 3, nrow = 3, byrow = TRUE)
+spicy_green3 = makeSymm(matr)
+#red
+matr = matrix(c(1, .9*sqrt(5), 0,
+                0, 5, .5*sqrt(50),
+                0, 0, 10), ncol = 3, nrow = 3, byrow = TRUE)
+spicy_red3 = makeSymm(matr)
+
+#########
+##obs 5##
+#########
+
+##MILD##
+
+#green
+matr = matrix(c(1, .5, .3, .2, .2,
+                0, 1, .4, .2, .1,
+                0, 0, 1, .5, .1,
+                0, 0, 0, 1, .3,
+                0, 0, 0, 0, 1), ncol = 5, nrow = 5, byrow = TRUE)
+mild_green5 = makeSymm(matr)
+#red
+matr = matrix(c(1, .5*sqrt(2), .3*sqrt(3), .2*sqrt(4), .2*sqrt(5),
+                0, 2, .4*sqrt(6), .2*sqrt(8), .1*sqrt(10),
+                0, 0, 3, .5*sqrt(12), .1*sqrt(15),
+                0, 0, 0, 4, .3*sqrt(20),
+                0, 0, 0, 0, 5), ncol = 5, nrow = 5, byrow = TRUE)
+mild_red5 = makeSymm(matr)
+##MEDIUM##
+
+#green
+matr = matrix(c(1, .3, .9, .5, .4,
+                0, 1, .3, .4, .2,
+                0, 0, 1, .4, .3,
+                0, 0, 0, 1, .1,
+                0, 0, 0, 0, 1), ncol = 5, nrow = 5, byrow = TRUE)
+med_green5 = makeSymm(matr)
+#red
+matr = matrix(c(1, .3*sqrt(2), .9*sqrt(3), .5*sqrt(4), .4*sqrt(5),
+                0, 2, .3*sqrt(6), .4*sqrt(8), .2*sqrt(10),
+                0, 0, 3, .4*sqrt(12), .3*sqrt(15),
+                0, 0, 0, 4, .1*sqrt(20),
+                0, 0, 0, 0, 5), ncol = 5, nrow = 5, byrow = TRUE)
+med_red5 = makeSymm(matr)
+##SPICY##
+
+#green
+matr = matrix(c(1, (-.9), .7, .2, 0,
+                0, 1, .5, (-.4), .1,
+                0, 0, 1, .3, .7,
+                0, 0, 0, 1, (-.2),
+                0, 0, 0, 0, 1), ncol = 5, nrow = 5, byrow = TRUE)
+spicy_green5 = makeSymm(matr)
+#red
+matr = matrix(c(1, (-.9)*sqrt(2), .7*sqrt(3), .2*sqrt(4), 0,
+                0, 2, .5*sqrt(6), (-.4)*sqrt(8), .1*sqrt(10),
+                0, 0, 3, .3*sqrt(12), .7*sqrt(15),
+                0, 0, 0, 4, (-.2)*sqrt(20),
+                0, 0, 0, 0, 5), ncol = 5, nrow = 5, byrow = TRUE)
+spicy_red5 = makeSymm(matr)
+#########
+##obs 10#
+#########
+
+##MILD##
+
+#green
+matr = matrix(c(1, .5, .3, .2, .3, .3, .2, .1, .1, .1, 
+                0, 1, .4, .2, .2, .3, .2, .2, .1, .1,
+                0, 0, 1, .5, .3, .3, .3, .2, .1, .1,
+                0, 0, 0, 1, .4, .2, .3, .2, .2, .1,
+                0, 0, 0, 0, 1, .4, .3, .3, .2, .2,
+                0, 0, 0, 0, 0, 1, .3, .3, .2, .2,
+                0, 0, 0, 0, 0, 0, 1, .3, .3, .1,
+                0, 0, 0, 0, 0, 0, 0, 1, .3, .3,
+                0, 0, 0, 0, 0, 0, 0, 0, 1, .3,
+                0, 0, 0, 0, 0, 0, 0, 0 , 0, 1),  ncol = 10, nrow =10, byrow = TRUE)
+mild_green10 = makeSymm(matr)
+#red
+matr = matrix(c(1, .5*sqrt(2), .3*sqrt(3), .2*sqrt(4), .3*sqrt(5), .3*sqrt(6), .2*sqrt(7), .1*sqrt(8), .1*sqrt(9), .1*sqrt(10), 
+                0, 2, .4*sqrt(6), .2*sqrt(8), .2*sqrt(10), .3*sqrt(12), .2*sqrt(14), .2*sqrt(16), .1*sqrt(18), .1*sqrt(20),
+                0, 0, 3, .5*sqrt(12), .3*sqrt(15), .3*sqrt(18), .3*sqrt(21), .2*sqrt(24), .1*sqrt(27), .1*sqrt(30),
+                0, 0, 0, 4, .4*sqrt(20), .2*sqrt(24), .3*sqrt(28), .2*sqrt(32), .2*sqrt(36), .1*sqrt(40),
+                0, 0, 0, 0, 5, .4*sqrt(30), .3*sqrt(35), .3*sqrt(40), .2*sqrt(45), .2*sqrt(50),
+                0, 0, 0, 0, 0, 6, .3*sqrt(42), .3*sqrt(48), .2*sqrt(54), .2*sqrt(60),
+                0, 0, 0, 0, 0, 0, 7, .3*sqrt(56), .3*sqrt(63), .1*sqrt(70),
+                0, 0, 0, 0, 0, 0, 0, 8, .3*sqrt(72), .3*sqrt(80),
+                0, 0, 0, 0, 0, 0, 0, 0, 9, .3*sqrt(90),
+                0, 0, 0, 0, 0, 0, 0, 0 , 0, 10),  ncol = 10, nrow =10, byrow = TRUE)
+mild_red10 = makeSymm(matr)
+##MEDIUM##
+
+#green
+matr = matrix(c(1, .3, .9, .5, .4, .6, .7, .4, .5, .4,
+                0, 1, .3, .4, .2, .3, .3, .4, .3, .3,
+                0, 0, 1, .4, .3, .2, .2, .4, .2, .4,
+                0, 0, 0, 1, .1, .2, .3, .3, .3, .5,
+                0, 0, 0, 0, 1, .3, .4, .4, .4, .6,
+                0, 0, 0, 0, 0, 1, .5, .3, .3, .4,
+                0, 0, 0, 0, 0, 0, 1, .2, .4, .5,
+                0, 0, 0, 0, 0, 0, 0, 1, .5, .9,
+                0, 0, 0, 0, 0, 0, 0, 0, 1, .7,
+                0, 0, 0, 0, 0, 0, 0, 0 , 0, 1),  ncol = 10, nrow =10, byrow = TRUE)
+med_green10 = makeSymm(matr)
+#red
+matr = matrix(c(1, .3*sqrt(2), .9*sqrt(3), .5*sqrt(4), .4*sqrt(5), .6*sqrt(6), .7*sqrt(7), .4*sqrt(8), .5*sqrt(9), .4*sqrt(10),
+                0, 2, .3*sqrt(6), .4*sqrt(8), .2*sqrt(10), .3*sqrt(12), .3*sqrt(14), .4*sqrt(16), .3*sqrt(18), .3*sqrt(20),
+                0, 0, 3, .4*sqrt(12), .3*sqrt(15), .2*sqrt(18), .2*sqrt(21), .4*sqrt(24), .2*sqrt(27), .4*sqrt(30),
+                0, 0, 0, 4, .1*sqrt(20), .2*sqrt(24), .3*sqrt(28), .3*sqrt(32), .3*sqrt(36), .5*sqrt(40),
+                0, 0, 0, 0, 5, .3*sqrt(30), .4*sqrt(35), .4*sqrt(40), .4*sqrt(45), .6*sqrt(50),
+                0, 0, 0, 0, 0, 6, .5*sqrt(42), .3*sqrt(48), .3*sqrt(54), .4*sqrt(60),
+                0, 0, 0, 0, 0, 0, 7, .2*sqrt(56), .4*sqrt(63), .5*sqrt(70),
+                0, 0, 0, 0, 0, 0, 0, 8, .5*sqrt(72), .9*sqrt(80),
+                0, 0, 0, 0, 0, 0, 0, 0, 9, .7*sqrt(90),
+                0, 0, 0, 0, 0, 0, 0, 0 , 0, 10),  ncol = 10, nrow =10, byrow = TRUE)
+med_red10 = makeSymm(matr)
+##SPICY##
+
+#green
+matr = matrix(c(1, (-.9), .7, .2, .0, (-.3), .7, .5, (-.5), .4,
+                0, 1, .5, (-.4), .1, .4, .8, (-.5), .8, .9,
+                0, 0, 1, .3, .7, .9, (-.2), .2, .1, (-.1),
+                0, 0, 0, 1, (-.2), .8, 0, .3, 0, 0,
+                0, 0, 0, 0, 1, .9, (-.9), .1, .5, .2,
+                0, 0, 0, 0, 0, 1, .8, .8, .6, .7,
+                0, 0, 0, 0, 0, 0, 1, .9, .1, .8,
+                0, 0, 0, 0, 0, 0, 0, 1, .5, .1,
+                0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+                0, 0, 0, 0, 0, 0, 0, 0 , 0, 1),  ncol = 10, nrow =10, byrow = TRUE)
+spicy_green10 = makeSymm(matr)
+#red
+matr = matrix(c(1, (-.9)*sqrt(2), .7*sqrt(3), .2*sqrt(4), 0, (-.3)*sqrt(6), .7*sqrt(7), .5*sqrt(8), (-.5)*sqrt(9), .4*sqrt(10), 
+                0, 2, .5*sqrt(6), (-.4)*sqrt(8), .1*sqrt(10), .4*sqrt(12), .8*sqrt(14), (-.5)*sqrt(16), .8*sqrt(18), .9*sqrt(20),
+                0, 0, 3, .3*sqrt(12), .7*sqrt(15), .9*sqrt(18), (-.2)*sqrt(21), .2*sqrt(24), .1*sqrt(27), (-.1)*sqrt(30),
+                0, 0, 0, 4, (-.2)*sqrt(20), .8*sqrt(24), 0, .3*sqrt(32), 0, 0,
+                0, 0, 0, 0, 5, .9*sqrt(30), (-.9)*sqrt(35), .1*sqrt(40), .5*sqrt(45), .2*sqrt(50),
+                0, 0, 0, 0, 0, 6, .8*sqrt(42), .8*sqrt(48), .6*sqrt(54), .7*sqrt(60),
+                0, 0, 0, 0, 0, 0, 7, .9*sqrt(56), .1*sqrt(63), .8*sqrt(70),
+                0, 0, 0, 0, 0, 0, 0, 8, .5*sqrt(72), .1*sqrt(80),
+                0, 0, 0, 0, 0, 0, 0, 0, 9, 0,
+                0, 0, 0, 0, 0, 0, 0, 0 , 0, 10),  ncol = 10, nrow =10, byrow = TRUE)
+spicy_red10 = makeSymm(matr)
 
 ####Generates and fits data, varying rho each trial####
 rho_experiment <- function(N, n_obs, n_sub, means, variances) {
