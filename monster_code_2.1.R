@@ -417,7 +417,71 @@ line_job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means
         print(e)
         row_counter = row_counter - 2
       },
-      finally = {row_counter = row_counter + 1}
+      finally = {
+        row_counter = row_counter + 1
+        }
+    )
+  }
+  
+  rownames(results) = c(1:N)
+  print(file_name)
+  write.csv(results, file_name)
+  
+}
+
+####UNSTRUCTURED Line by Line Job Results Gen w/ Sigma Gen####
+UN_line_job_results_gen <- function(N, n_obs, n_sub, UN_sigma){
+  ##new update!! won't fail anymore :)
+  
+  means = rep(0, n_obs)
+  
+  UN_type = deparse(substitute(UN_sigma))
+  
+  results = matrix(0, 0, 18)
+  colnames(results) = c(
+    "UNfit_AIC",
+    "UNfit_AICc",
+    "UNfit_BIC",
+    "SIMfit_AIC",
+    "SIMfit_AICc",
+    "SIMfit_BIC",
+    "CSfit_AIC",
+    "CSfit_AICc",
+    "CSfit_BIC",
+    "AR1fit_AIC",
+    "AR1fit_AICc",
+    "AR1fit_BIC",
+    "CSHfit_AIC",
+    "CSHfit_AICc",
+    "CSHfit_BIC",
+    "ARH1fit_AIC",
+    "ARH1fit_AICc",
+    "ARH1fit_BIC"
+  )
+  
+  file_name = paste("N", N, "obs", n_obs, "sub", n_sub, "UN", UN_type, sep = "_")
+  file_name = paste(file_name, ".csv", sep = "")
+  
+  write.csv(results, file_name)
+  
+  row_counter = 0
+  
+  while(row_counter < N){
+    tryCatch(
+      expr = {
+        
+        clean_data = generate_data(n_obs, n_sub, UN_sigma, means)
+        res = fit_data(clean_data, n_obs, n_sub)
+        
+        results = rbind(results, res)
+      },
+      error = function(e){
+        print(e)
+        row_counter = row_counter - 2
+      },
+      finally = {
+        row_counter = row_counter + 1
+      }
     )
   }
   
