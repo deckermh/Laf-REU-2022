@@ -142,13 +142,13 @@ generate_data <- function(n_obs, n_sub, Sigma, means) {
     clean_data = reshape(datamatrix, varying = list(2:(n_obs + 1)), direction =
                            "long")
     names(clean_data) = c("subject", "time", "observation", "id")
-    
     return(clean_data)
   }
 
 ####Fit Data Function####
 #returns results matrix (summary of all IC values for each trial)
 fit_data <- function(clean_data, n_obs, n_sub) {
+  
   observation = clean_data$observation
   time = clean_data$time
   id = clean_data$id
@@ -161,18 +161,12 @@ fit_data <- function(clean_data, n_obs, n_sub) {
   ##
   #Unstructured
   ##
-  UNfit = 0
-  if (UNfit == 0){
-    UNfit = try(gls(observation ~ time, corr = corSymm(form = ~ 1 |id), weights = varIdent(form = ~ 1 | time)), silent = TRUE)
-  }
-  else{
-    
-  }
   
+  UNfit = gls(observation ~ time, corr = corSymm(form = ~ 1 |id), weights = varIdent(form = ~ 1 | time))
+
   ##
   #Simple?
   ##
-  
   SIMfit = gls(observation ~ time)
   
   ##
@@ -350,10 +344,7 @@ job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means){
 
 ####Line by Line Job Results Gen w/ Sigma Gen####
 line_job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means){
-  ##same as original job_results_gen but fills in csv one line at a time
-  ##to save completed trials that were done before a failed trial
-  ##the way it is written now it just overwrites the previous csv with new
-  ##matrix with a new row rather than appending, may need to change this later!!
+  ##new update!! won't fail anymore :)
   
   means_string = "means"
   for (mean in means){
@@ -365,7 +356,7 @@ line_job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means
     sigma_string = paste(sigma_string, sigma, sep = "_")
   }
   
-  results = matrix(0, N, 18)
+  results = matrix(0, 0, 18)
   colnames(results) = c(
     "UNfit_AIC",
     "UNfit_AICc",
@@ -390,38 +381,116 @@ line_job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means
   file_name = paste("N", N, "obs", n_obs, "sub", n_sub, exp_type, sigma_string, "p", p, means_string, sep = "_")
   file_name = paste(file_name, ".csv", sep = "")
   
-  print(file_name)
+  write.csv(results, file_name)
   
-  for (i in 1:N){
-    if (exp_type == "UN"){
-      print("Do manually with job_results_gen_manual")
-    }
-    else if (exp_type == "SIM"){
-      Sigma = matrix(0, n_obs, n_obs) + diag(sigma_vect^2, n_obs)
-    }
-    else if (exp_type == "CS"){
-      Sigma = makeCS(n_obs, p, sigma_vect)
-    }
-    else if (exp_type == "AR1"){
-      Sigma = makeAR1(n_obs, p, sigma_vect)
-    }
-    else if (exp_type == "CSH"){
-      Sigma = makeCSH(n_obs, p, sigma_vect)
-    }
-    else if (exp_type == "ARH1"){
-      Sigma = makeARH1(n_obs, p, sigma_vect)
-    }
-    
-    
-    clean_data = generate_data(n_obs, n_sub, Sigma, means)
-    res = fit_data(clean_data, n_obs, n_sub) 
-    
-    results[i,] = res
-    
-    write.csv(results, file_name)
+  row_counter = 0
+  
+  while(row_counter < N){
+    tryCatch(
+      expr = {
+        if (exp_type == "UN"){
+          print("Do manually with job_results_gen_manual")
+        }
+        else if (exp_type == "SIM"){
+          Sigma = matrix(0, n_obs, n_obs) + diag(sigma_vect^2, n_obs)
+        }
+        else if (exp_type == "CS"){
+          Sigma = makeCS(n_obs, p, sigma_vect)
+        }
+        else if (exp_type == "AR1"){
+          Sigma = makeAR1(n_obs, p, sigma_vect)
+        }
+        else if (exp_type == "CSH"){
+          Sigma = makeCSH(n_obs, p, sigma_vect)
+        }
+        else if (exp_type == "ARH1"){
+          Sigma = makeARH1(n_obs, p, sigma_vect)
+        }
+        
+        
+        clean_data = generate_data(n_obs, n_sub, Sigma, means)
+        res = fit_data(clean_data, n_obs, n_sub)
+        
+        results = rbind(results, res)
+      },
+      error = function(e){
+        print(e)
+        row_counter = row_counter - 2
+      },
+      finally = {
+        row_counter = row_counter + 1
+        }
+    )
   }
   
+  rownames(results) = c(1:N)
+  print(file_name)
+  write.csv(results, file_name)
+  
 }
+
+####UNSTRUCTURED Line by Line Job Results Gen w/ Sigma Gen####
+UN_line_job_results_gen <- function(N, n_obs, n_sub, UN_sigma){
+  ##new update!! won't fail anymore :)
+  
+  means = rep(0, n_obs)
+  
+  UN_type = deparse(substitute(UN_sigma))
+  
+  results = matrix(0, 0, 18)
+  colnames(results) = c(
+    "UNfit_AIC",
+    "UNfit_AICc",
+    "UNfit_BIC",
+    "SIMfit_AIC",
+    "SIMfit_AICc",
+    "SIMfit_BIC",
+    "CSfit_AIC",
+    "CSfit_AICc",
+    "CSfit_BIC",
+    "AR1fit_AIC",
+    "AR1fit_AICc",
+    "AR1fit_BIC",
+    "CSHfit_AIC",
+    "CSHfit_AICc",
+    "CSHfit_BIC",
+    "ARH1fit_AIC",
+    "ARH1fit_AICc",
+    "ARH1fit_BIC"
+  )
+  
+  file_name = paste("N", N, "obs", n_obs, "sub", n_sub, "UN", UN_type, sep = "_")
+  file_name = paste(file_name, ".csv", sep = "")
+  
+  write.csv(results, file_name)
+  
+  row_counter = 0
+  
+  while(row_counter < N){
+    tryCatch(
+      expr = {
+        
+        clean_data = generate_data(n_obs, n_sub, UN_sigma, means)
+        res = fit_data(clean_data, n_obs, n_sub)
+        
+        results = rbind(results, res)
+      },
+      error = function(e){
+        print(e)
+        row_counter = row_counter - 2
+      },
+      finally = {
+        row_counter = row_counter + 1
+      }
+    )
+  }
+  
+  rownames(results) = c(1:N)
+  print(file_name)
+  write.csv(results, file_name)
+  
+}
+
 ####Data Retrieval Process Streamlined####
 data_retrieve <- function(file_name){
   ##note need to enter file name in quotes e.g. data_retrieve("file_name")
