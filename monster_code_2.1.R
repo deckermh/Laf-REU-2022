@@ -1192,9 +1192,9 @@ plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
   matplot(
     x_vect,
     type3_data[, 1:6],
-    main = paste("Percentage of AIC Type 3 Results Varying", x_vect_var_name, sep = " "),
+    main = "AIC Type 3",
     xlab = x_vect_var_name,
-    ylab = "Percentage",
+    ylab = "Proportion",
     pch = 19,
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
     type = "b"
@@ -1212,9 +1212,9 @@ plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
   matplot(
     x_vect,
     type4_data[, 1:6],
-    main = paste("Percentage of AIC Type 4 Results Varying", x_vect_var_name, sep = " "),
+    main = "AIC Type 4",
     xlab = x_vect_var_name,
-    ylab = "Percentage",
+    ylab = "Proportion",
     pch = 19,
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
     type = "b"
@@ -1236,9 +1236,9 @@ plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
   matplot(
     x_vect,
     type3_data[, 7:12],
-    main = paste("Percentage of AICc Type 3 Results Varying", x_vect_var_name, sep = " "),
+    main = "AICc Type 3",
     xlab = x_vect_var_name,
-    ylab = "Percentage",
+    ylab = "Proportion",
     pch = 19,
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
     type = "b"
@@ -1256,9 +1256,9 @@ plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
   matplot(
     x_vect,
     type4_data[, 7:12],
-    main = paste("Percentage of AICc Type 4 Results Varying", x_vect_var_name, sep = " "),
+    main = "AICc Type 4",
     xlab = x_vect_var_name,
-    ylab = "Percentage",
+    ylab = "Proportion",
     pch = 19,
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
     type = "b"
@@ -1280,9 +1280,9 @@ plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
   matplot(
     x_vect,
     type3_data[, 13:18],
-    main = paste("Percentage of BIC Type 3 Results Varying", x_vect_var_name, sep = " "),
+    main = "BIC Type 3",
     xlab = x_vect_var_name,
-    ylab = "Percentage",
+    ylab = "Proportion",
     pch = 19,
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
     type = "b"
@@ -1300,9 +1300,9 @@ plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
   matplot(
     x_vect,
     type4_data[, 13:18],
-    main = paste("Percentage of BIC Type 4 Results Varying", x_vect_var_name, sep = " "),
+    main = "BIC Type 4",
     xlab = x_vect_var_name,
-    ylab = "Percentage",
+    ylab = "Proportion",
     pch = 19,
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
     type = "b"
@@ -1318,6 +1318,8 @@ plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
   
   dev.off()
 }
+
+####Plot 3 and 4 as a Function of RULE OF THUMB####
 
 
 
