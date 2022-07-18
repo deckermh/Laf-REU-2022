@@ -1327,6 +1327,259 @@ plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
 }
 
 ####Plot 3 and 4 as a Function of RULE OF THUMB####
+thumb_plot34 <- function(data, exp_col_num_AIC){
+  ###data_list is a list(data1, data2, ... dataN) list of all sets of data of interest
+  ###IMPORTANT ~ save ur data_list and name it before use in this function
+  ###b/c this name is used to create the pdf file name
+  ###thumb_vect is a vect of the thumb vals want to investigate
+  
+  data_name = deparse(substitute(data))
+  
+  pdf(file=paste(data_name, "_", "thumb", ".pdf", sep = ""))
+  layout(mat = matrix(c(1, 3, 5, 2, 4, 6), nrow = 3, ncol = 2))
+  
+  thumb_vect = seq(0, 7, .5)
+  
+  ###rows of these matrices will go top to bottom p = .1, .2, ... , .5, .8
+  type3_data = matrix(0, length(thumb_vect), 18)
+  colnames(type3_data) = c(
+    "AIC_UN",
+    "AIC_SIM",
+    "AIC_CS",
+    "AIC_AR1",
+    "AIC_CSH",
+    "AIC_ARH1",
+    "AICc_UN",
+    "AICc_SIM",
+    "AICc_CS",
+    "AICc_AR1",
+    "AICc_CSH",
+    "AICc_ARH1",
+    "BIC_UN",
+    "BIC_SIM",
+    "BIC_CS",
+    "BIC_AR1",
+    "BIC_CSH",
+    "BIC_ARH1"
+  )
+  
+  type4_data = matrix(0, length(thumb_vect), 18)
+  colnames(type4_data) = colnames(type3_data)
+  
+  row_count = 1
+  diff = diff(data, exp_col_num_AIC)
+  
+  for (thumb in thumb_vect){
+    quad = quad_correct(diff, thumb)
+    
+    ##
+    #type 3
+    ##
+    
+    #AIC
+    type3_data[row_count, 1] = quad[3, 1]
+    type3_data[row_count, 2] = quad[3, 4]
+    type3_data[row_count, 3] = quad[3, 7]
+    type3_data[row_count, 4] = quad[3, 10]
+    type3_data[row_count, 5] = quad[3, 13]
+    type3_data[row_count, 6] = quad[3, 16]
+    
+    #AICc
+    type3_data[row_count, 7] = quad[3, 2]
+    type3_data[row_count, 8] = quad[3, 5]
+    type3_data[row_count, 9] = quad[3, 8]
+    type3_data[row_count, 10] = quad[3, 11]
+    type3_data[row_count, 11] = quad[3, 14]
+    type3_data[row_count, 12] = quad[3, 17]
+    
+    #BIC
+    type3_data[row_count, 13] = quad[3, 3]
+    type3_data[row_count, 14] = quad[3, 6]
+    type3_data[row_count, 15] = quad[3, 9]
+    type3_data[row_count, 16] = quad[3, 12]
+    type3_data[row_count, 17] = quad[3, 15]
+    type3_data[row_count, 18] = quad[3, 18]
+    
+    ##
+    #type 4
+    ##
+    
+    #AIC
+    type4_data[row_count, 1] = quad[4, 1]
+    type4_data[row_count, 2] = quad[4, 4]
+    type4_data[row_count, 3] = quad[4, 7]
+    type4_data[row_count, 4] = quad[4, 10]
+    type4_data[row_count, 5] = quad[4, 13]
+    type4_data[row_count, 6] = quad[4, 16]
+    
+    #AICc
+    type4_data[row_count, 7] = quad[4, 2]
+    type4_data[row_count, 8] = quad[4, 5]
+    type4_data[row_count, 9] = quad[4, 8]
+    type4_data[row_count, 10] = quad[4, 11]
+    type4_data[row_count, 11] = quad[4, 14]
+    type4_data[row_count, 12] = quad[4, 17]
+    
+    #BIC
+    type4_data[row_count, 13] = quad[4, 3]
+    type4_data[row_count, 14] = quad[4, 6]
+    type4_data[row_count, 15] = quad[4, 9]
+    type4_data[row_count, 16] = quad[4, 12]
+    type4_data[row_count, 17] = quad[4, 15]
+    type4_data[row_count, 18] = quad[4, 18]
+    
+    
+    row_count = row_count + 1
+  }
+  
+  
+  
+  ##
+  #AIC PLOTS
+  ##
+  
+  #Type3
+  matplot(
+    thumb_vect,
+    type3_data[, 1:6],
+    main = "AIC Type 3",
+    xlab = "Rule of Thumb",
+    ylab = "Proportion",
+    pch = 19,
+    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    type = "b"
+  )
+  abline(v=2, col="red")
+  abline(v=3, col="blue")
+  legend(
+    "topleft",
+    legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
+    fill = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    box.lty=0,
+    ncol = 3,
+    cex = .6
+  )
+  
+  #Type4
+  matplot(
+    thumb_vect,
+    type4_data[, 1:6],
+    main = "AIC Type 4",
+    xlab = "Rule of Thumb",
+    ylab = "Proportion",
+    pch = 19,
+    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    type = "b"
+  )
+  abline(v=2, col="red")
+  abline(v=3, col="blue")
+  legend(
+    "topleft",
+    legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
+    fill = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"), 
+    box.lty=0,
+    ncol = 3,
+    cex = .6
+  )
+  
+  ##
+  #AICc PLOTS
+  ##
+  
+  #Type3
+  matplot(
+    thumb_vect,
+    type3_data[, 7:12],
+    main = "AICc Type 3",
+    xlab = "Rule of Thumb",
+    ylab = "Proportion",
+    pch = 19,
+    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    type = "b"
+  )
+  abline(v=2, col="red")
+  abline(v=3, col="blue")
+  legend(
+    "topleft",
+    legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
+    fill = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    box.lty = 0,
+    ncol = 3,
+    cex = .6
+  )
+  
+  #Type4
+  matplot(
+    thumb_vect,
+    type4_data[, 7:12],
+    main = "AICc Type 4",
+    xlab = "Rule of Thumb",
+    ylab = "Proportion",
+    pch = 19,
+    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    type = "b"
+  )
+  abline(v=2, col="red")
+  abline(v=3, col="blue")
+  legend(
+    "topleft",
+    legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
+    fill = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"), 
+    box.lty=0,
+    ncol = 3,
+    cex = .6
+  )
+  
+  ##
+  #BIC PLOTS
+  ##
+  
+  #Type3
+  matplot(
+    thumb_vect,
+    type3_data[, 13:18],
+    main = "BIC Type 3",
+    xlab = "Rule of Thumb",
+    ylab = "Proportion",
+    pch = 19,
+    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    type = "b"
+  )
+  abline(v=2, col="red")
+  abline(v=3, col="blue")
+  legend(
+    "topleft",
+    legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
+    fill = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    box.lty=0,
+    ncol = 3,
+    cex = .6
+  )
+  
+  #Type4
+  matplot(
+    thumb_vect,
+    type4_data[, 13:18],
+    main = "BIC Type 4",
+    xlab = "Rule of Thumb",
+    ylab = "Proportion",
+    pch = 19,
+    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    type = "b"
+  )
+  abline(v=2, col="red")
+  abline(v=3, col="blue")
+  legend(
+    "topleft",
+    legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
+    fill = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"), 
+    box.lty=0,
+    ncol = 3,
+    cex = .6
+  )
+  
+  dev.off()
+}
 
 
 
