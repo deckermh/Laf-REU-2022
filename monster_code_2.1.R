@@ -1584,4 +1584,3 @@ thumb_plot34 <- function(data, exp_col_num_AIC){
 
 
 
-
