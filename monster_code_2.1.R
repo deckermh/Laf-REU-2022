@@ -563,7 +563,7 @@ line_job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means
   
   row_counter = 0
   
-  while(row_counter < N){
+  while(row_counter < N+5){
     tryCatch(
       expr = {
         if (exp_type == "UN"){
