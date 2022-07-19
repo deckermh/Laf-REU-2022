@@ -1,3 +1,4 @@
+setwd("~/Desktop")
 ####~~~~~~~~~~~~~~#Covariance Matrix Generators#~~~~~~~~~~~~~~~~~~####
 #Sigma Generation Functions####
 
@@ -1517,6 +1518,7 @@ thumb_plot34 <- function(data, exp_col_num_AIC){
   
   pdf(file=paste(data_name, "_", "thumb", ".pdf", sep = ""))
   layout(mat = matrix(c(1, 3, 5, 2, 4, 6), nrow = 3, ncol = 2))
+  #use subplot if trying to do with plotly loaded?
   
   thumb_vect = seq(0, 7, .5)
   
@@ -1760,7 +1762,6 @@ thumb_plot34 <- function(data, exp_col_num_AIC){
   
   dev.off()
 }
-
 
 
 
