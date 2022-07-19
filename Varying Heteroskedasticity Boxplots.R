@@ -4,8 +4,9 @@
 #@param N - number of trials
 #@param type - the type of error/success to boxplot (type 1, 2, 3, or 4)
 #@param IC - the type of IC to plot (0 = AIC, 1 = AICc, 2 = BIC)
+#@param rho - the level of correlation for the cov matrix
 #
-ICHeteroBoxplots <- function(N, type, IC) {
+ICHeteroBoxplots <- function(N, type, IC, rho = .7) {
   if (type != 1 && type != 2 && type != 3 && type != 4) {
     return(NULL)
   }
@@ -23,7 +24,7 @@ ICHeteroBoxplots <- function(N, type, IC) {
     for (j in 1:N) {
       #generate CSH matrix with varying levels of heterosked.
       sigmas = c(sqrt(i), sqrt(10), sqrt(10))
-      Sigma = makeCSH(3, .7, sigmas)
+      Sigma = makeCSH(3, rho, sigmas)
       
       #get quad correct for data (NOTE N SHOULD BE 100)
       res = results_matrix(100, 3, 40, Sigma, c(0, 0, 0))
