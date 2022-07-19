@@ -87,7 +87,11 @@ makeSymm <- function(matr) {
   }
   return(newMatrix)
 }
-#########Unstructured
+
+##
+#Unstructured Sigmas
+##
+
 ##obs 3##
 #########
 
@@ -559,7 +563,7 @@ line_job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means
   
   row_counter = 0
   
-  while(row_counter < N){
+  while(row_counter < N+5){
     tryCatch(
       expr = {
         if (exp_type == "UN"){
@@ -589,7 +593,7 @@ line_job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means
       },
       error = function(e){
         print(e)
-        row_counter = row_counter - 2
+        row_counter = row_counter - 1
       },
       finally = {
         row_counter = row_counter + 1
@@ -597,8 +601,10 @@ line_job_results_gen <- function(N, n_obs, n_sub, exp_type, p, sigma_vect, means
     )
   }
   
-  rownames(results) = c(1:N)
+  dim_res = dim(results)
+  rownames(results) = c(1:dim_res[1])
   print(file_name)
+  print(dim_res[1])
   write.csv(results, file_name)
   
 }
@@ -1754,6 +1760,10 @@ thumb_plot34 <- function(data, exp_col_num_AIC){
   
   dev.off()
 }
+
+
+
+
 
 
 
