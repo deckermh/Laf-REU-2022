@@ -3,21 +3,20 @@
 #
 #@param N - number of trials
 #@param type - the type of error/success to boxplot (type 1, 2, 3, or 4)
-#@param IC - the type of IC to plot (0 = AIC, 1 = AICc, 2 = BIC)
+#@param maxCount - the amount of total trials to run to see when each IC fails
 #@param rho - the level of correlation for the cov matrix
 #
-ICHeteroBoxplots <- function(N, type, IC, rho = .7) {
+ICHeteroBoxplots <- function(N, type, maxCount = 100, rho = .7) {
   if (type != 1 && type != 2 && type != 3 && type != 4) {
     return(NULL)
   }
-  if (IC != 0 && IC != 1 && IC != 2) {
-    return(NULL)
-  }
   
-  #This matrix will store a ton of IC failure counts.
+  #These matrices will store a ton of IC failure counts.
   #the first row will be N type 4 percentages at .1 heteroskedasticity
   #the second row will be at .2 heteroskedasticity, etc.
-  IC_CS_Data = matrix(nrow = 8, ncol = N)
+  AIC_CS_Data = matrix(nrow = 8, ncol = N)
+  AICc_CS_Data = matrix(nrow = 8, ncol = N)
+  BIC_CS_Data = matrix(nrow = 8, ncol = N)
   
   #we vary min/max ratio from .1 to .8
   for (i in 1:8) {
@@ -26,28 +25,72 @@ ICHeteroBoxplots <- function(N, type, IC, rho = .7) {
       sigmas = c(sqrt(i), sqrt(10), sqrt(10))
       Sigma = makeCSH(3, rho, sigmas)
       
-      #get quad correct for data (NOTE N SHOULD BE 100)
-      res = results_matrix(100, 3, 40, Sigma, c(0, 0, 0))
+      #get quad correct for data
+      res = results_matrix(maxCount, 3, 40, Sigma, c(0, 0, 0))
       d = diff(res, 13)
       #rule of thumb is 3
       quad = quad_correct(d, 3, returnPercents = F)
       
-      #get failure count for IC_CS fit
-      IC_CS_count = quad[type, 7 + IC]
-      IC_CS_Data[i, j] = IC_CS_count
+      #get success count for IC_CS fit
+      AIC_CS_count = quad[type, 7]
+      AICc_CS_count = quad[type, 8]
+      BIC_CS_count = quad[type, 9]
+      
+      #add success count to all matrices 
+      AIC_CS_Data[i, j] = AIC_CS_count
+      AICc_CS_Data[i, j] = AICc_CS_count
+      BIC_CS_Data[i, j] = BIC_CS_count
     }
   }
   
+  write.matrix(AIC_CS_Data, "./SimpleHeterosked/AIC_CS_Data_SIMPLE.csv")
+  write.matrix(AICc_CS_Data, "./SimpleHeterosked/AICc_CS_Data_SIMPLE.csv")
+  write.matrix(BIC_CS_Data, "./SimpleHeterosked/BIC_CS_Data_SIMPLE.csv")
+  
   #create boxplots
   boxplot(
-    IC_CS_Data[1, ],
-    IC_CS_Data[2, ],
-    IC_CS_Data[3, ],
-    IC_CS_Data[4, ],
-    IC_CS_Data[5, ],
-    IC_CS_Data[6, ],
-    IC_CS_Data[7, ],
-    IC_CS_Data[8, ],
-    main = paste("Type ", type, "Percentage for Varying Heteroskedasticity")
+    AIC_CS_Data[1, ],
+    AIC_CS_Data[2, ],
+    AIC_CS_Data[3, ],
+    AIC_CS_Data[4, ],
+    AIC_CS_Data[5, ],
+    AIC_CS_Data[6, ],
+    AIC_CS_Data[7, ],
+    AIC_CS_Data[8, ],
+    main = paste("AIC Type ", type, "Counts Vs. Heteroskedasticity"),
+    xlab = "Min/Max Ratio",
+    ylab = "Type 4 Count (Out of 100)",
+    names = seq(.1, .8, by = .1)
+    )
+  
+  boxplot(
+    AICc_CS_Data[1, ],
+    AICc_CS_Data[2, ],
+    AICc_CS_Data[3, ],
+    AICc_CS_Data[4, ],
+    AICc_CS_Data[5, ],
+    AICc_CS_Data[6, ],
+    AICc_CS_Data[7, ],
+    AICc_CS_Data[8, ],
+    main = paste("AICc Type ", type, "Counts Vs. Heteroskedasticity"),
+    xlab = "Min/Max Ratio",
+    ylab = "Type 4 Count (Out of 100)",
+    names = seq(.1, .8, by = .1)
+  )
+  
+  boxplot(
+    BIC_CS_Data[1, ],
+    BIC_CS_Data[2, ],
+    BIC_CS_Data[3, ],
+    BIC_CS_Data[4, ],
+    BIC_CS_Data[5, ],
+    BIC_CS_Data[6, ],
+    BIC_CS_Data[7, ],
+    BIC_CS_Data[8, ],
+    main = paste("BIC Type ", type, "Counts Vs. Heteroskedasticity"),
+    xlab = "Min/Max Ratio",
+    ylab = "Type 4 Count (Out of 100)",
+    names = seq(.1, .8, by = .1)
   )
 }
+
