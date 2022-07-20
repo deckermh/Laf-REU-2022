@@ -681,6 +681,24 @@ data_retrieve <- function(file_name){
   return(data)
 }
 
+####Mass Data Retrieve For Heteroskedastic Data####
+mass_data <- function(base_data_name){
+  str_pieces = str_split(base_data_name, "sigma_1", n = 3, simplify = TRUE)
+  temp = str_split(str_pieces[2], "p_0.1", simplify = TRUE)
+  str_pieces[2] = temp[1]
+  str_pieces[3] = temp[2]
+  
+  #data list will be list of 36 filenames to be called
+  data_list = c()
+  for (ratio in c(1:5, 8)){
+    for (p in c(1:5, 8)){
+      filename = paste(str_pieces[1], "sigma_", ratio, str_pieces[2], "p_0.", p, str_pieces[3], sep = "")
+      data_list = c(data_list, filename)
+    }
+  }
+  return(data_list)
+}
+
 ####~~~~~~~~~~~~~~#Data Analysis Functions#~~~~~~~~~~~~~~~~~~####
 ####Data Analysis####
 #outputs 1-6 ranked least to greatest for each IC

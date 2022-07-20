@@ -132,11 +132,11 @@ graph_3D <- function(base_data_name, AIC_exp_num, thumb){
   }
   
   axx <- list(
-    title = "Rho"
+    title = "Heteroskedasticity"
   )
   
   axy <- list(
-    title = "Heteroskedasticity"
+    title = "Rho"
   )
   
   axz <- list(
@@ -145,7 +145,7 @@ graph_3D <- function(base_data_name, AIC_exp_num, thumb){
   
   ###TYPE 3###
   ##AIC UN##
-  fig1 <- plot_ly(x = c(.1, .2, .3, .4, .5, .8), y = c(.1, .2, .3, .4, .5, .8), z = type3_AIC_UN) 
+  fig1 <- plot_ly(x = c(.8, .5, .4, .3, .2, .1), y = c(.1, .2, .3, .4, .5, .8), z = type3_AIC_UN) 
   fig1 <- fig1 %>% add_surface()
   fig1 <- fig1 %>% layout(title = "Type 3 AIC UN", scene = list(xaxis=axx,yaxis=axy,zaxis=axz))
 
@@ -373,43 +373,43 @@ graph_3D <- function(base_data_name, AIC_exp_num, thumb){
   htmlwidgets::saveWidget(as_widget(fig36), "type4_BIC_ARH1.html")
 
   #uncomment if want to see in R instead of widget
-  # return(
-  # list(
-  #   fig1,
-  #   fig2,
-  #   fig3,
-  #   fig4,
-  #   fig5,
-  #   fig6,
-  #   fig7,
-  #   fig8,
-  #   fig9,
-  #   fig10,
-  #   fig11,
-  #   fig12,
-  #   fig13,
-  #   fig14,
-  #   fig15,
-  #   fig16,
-  #   fig17,
-  #   fig18,
-  #   fig19,
-  #   fig20,
-  #   fig21,
-  #   fig22,
-  #   fig23,
-  #   fig24,
-  #   fig25,
-  #   fig26,
-  #   fig28,
-  #   fig29,
-  #   fig30,
-  #   fig31,
-  #   fig32,
-  #   fig33,
-  #   fig34,
-  #   fig35,
-  #   fig36
-  # )
-  # )
+  return(
+  list(
+    fig1,
+    fig2,
+    fig3,
+    fig4,
+    fig5,
+    fig6,
+    fig7,
+    fig8,
+    fig9,
+    fig10,
+    fig11,
+    fig12,
+    fig13,
+    fig14,
+    fig15,
+    fig16,
+    fig17,
+    fig18,
+    fig19,
+    fig20,
+    fig21,
+    fig22,
+    fig23,
+    fig24,
+    fig25,
+    fig26,
+    fig28,
+    fig29,
+    fig30,
+    fig31,
+    fig32,
+    fig33,
+    fig34,
+    fig35,
+    fig36
+  )
+  )
 }
