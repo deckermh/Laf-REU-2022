@@ -1292,7 +1292,7 @@ plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
   data_name = deparse(substitute(data_list))
   
   pdf(file=paste(data_name, "_", "type34", ".pdf", sep = ""))
-  layout(mat = matrix(c(1, 3, 5, 2, 4, 6), nrow = 3, ncol = 2))
+  graphics::layout(mat = matrix(c(1, 3, 5, 2, 4, 6), nrow = 3, ncol = 2))
   
   len = length(data_list)
   
@@ -1526,17 +1526,18 @@ plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
 }
 
 ####Plot 3 and 4 as a Function of RULE OF THUMB####
-thumb_plot34 <- function(data, exp_col_num_AIC){
+thumb_plot34 <- function(data, data_name, exp_col_num_AIC){
   ###data_list is a list(data1, data2, ... dataN) list of all sets of data of interest
   ###IMPORTANT ~ save ur data_list and name it before use in this function
   ###b/c this name is used to create the pdf file name
   ###thumb_vect is a vect of the thumb vals want to investigate
   
-  data_name = deparse(substitute(data))
+  #data_name = deparse(substitute(data))
+  
   
   pdf(file=paste(data_name, "_", "thumb", ".pdf", sep = ""))
-  layout(mat = matrix(c(1, 3, 5, 2, 4, 6), nrow = 3, ncol = 2))
-  #use subplot if trying to do with plotly loaded?
+  graphics::layout(mat = matrix(c(1, 3, 5, 2, 4, 6), nrow = 3, ncol = 2))
+  
   
   thumb_vect = seq(0, 7, .5)
   
@@ -1783,7 +1784,10 @@ thumb_plot34 <- function(data, exp_col_num_AIC){
 
 
 
-
+for (d in data){
+  dat = data_retrieve(d)
+  thumb_plot34(dat, 13)
+}
 
 
 
