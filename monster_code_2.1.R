@@ -93,8 +93,6 @@ makeSymm <- function(matr) {
 ##
 
 ##obs 3##
-#########
-
 ##MILD##
 #green
 matr = matrix(c(1, .5, .7,
@@ -121,7 +119,6 @@ med_red3 = makeSymm(matr)
 
 ##SPICY##
 #green
-
 matr = matrix(c(1, .9, 0.09,
                 0, 1, .5,
                 0, 0, 1), ncol = 3, nrow = 3, byrow = TRUE)
@@ -129,17 +126,12 @@ spicy_green3 = makeSymm(matr)
 
 
 #red
-
 matr = matrix(c(1, .9*sqrt(5), .23,
                 0, 5, .5*sqrt(50),
                 0, 0, 10), ncol = 3, nrow = 3, byrow = TRUE)
 spicy_red3 = makeSymm(matr)
-##
-#
-#
-#########
+
 ##obs 5##
-#########
 
 ##MILD##
 
@@ -176,33 +168,24 @@ med_red5 = makeSymm(matr)
 ##SPICY##
 
 #green
-
 matr = matrix(c(1, (-.32), .60, .2, .1,
                 0, 1, .4, (-.2), .3,
                 0, 0, 1, .2, .68,
                 0, 0, 0, 1, (-.18),
                 0, 0, 0, 0, 1), ncol = 5, nrow = 5, byrow = TRUE)
 spicy_green5 = makeSymm(matr)
-#
-#
 
 #red
-
 matr = matrix(c(1, (-.32)*sqrt(2), .6*sqrt(3), .2*sqrt(4), 1,
                 0, 2, .4*sqrt(6), (-.2)*sqrt(8), .3*sqrt(10),
                 0, 0, 3, .2*sqrt(12), .68*sqrt(15),
                 0, 0, 0, 4, (-.18)*sqrt(20),
                 0, 0, 0, 0, 5), ncol = 5, nrow = 5, byrow = TRUE)
 spicy_red5 = makeSymm(matr)
-#
-#
-#
-#########
+
 ##obs 10#
-#########
 
 ##MILD##
-
 #green
 matr = matrix(c(1, .5, .3, .2, .3, .3, .2, .1, .1, .1, 
                 0, 1, .4, .2, .2, .3, .2, .2, .1, .1,
@@ -241,7 +224,7 @@ matr = matrix(c(1, .35, .8, .45, .4, .6, .65, .4, .5, .44,
                 0, 0, 0, 0, 0, 0, 0, 0, 1, .65,
                 0, 0, 0, 0, 0, 0, 0, 0 , 0, 1),  ncol = 10, nrow =10, byrow = TRUE)
 med_green10 = makeSymm(matr)
-##
+
 #red
 matr = matrix(c(1, .35*sqrt(2), .8*sqrt(3), .45*sqrt(4), .4*sqrt(5), .6*sqrt(6), .65*sqrt(7), .4*sqrt(8), .5*sqrt(9), .44*sqrt(10),
                 0, 2, .3*sqrt(6), .4*sqrt(8), .2*sqrt(10), .3*sqrt(12), .3*sqrt(14), .4*sqrt(16), .3*sqrt(18), .35*sqrt(20),
@@ -254,7 +237,6 @@ matr = matrix(c(1, .35*sqrt(2), .8*sqrt(3), .45*sqrt(4), .4*sqrt(5), .6*sqrt(6),
                 0, 0, 0, 0, 0, 0, 0, 0, 9, .65*sqrt(90),
                 0, 0, 0, 0, 0, 0, 0, 0 , 0, 10),  ncol = 10, nrow =10, byrow = TRUE)
 med_red10 = makeSymm(matr)
-#
 
 ####Generates and fits data, varying rho each trial####
 rho_experiment <- function(N, n_obs, n_sub, means, variances) {
@@ -2170,7 +2152,6 @@ graph_3D <- function(base_data_name, AIC_exp_num, thumb){
   # )
   # )
 }
-
 
 
 
