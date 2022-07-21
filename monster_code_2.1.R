@@ -2203,16 +2203,15 @@ for (d in data){
 # @param threshold: could be .98, .9, .8. 
 # @param dataList: List of names of CSV files
 #
-thumb_cutoffs <- function (threshold, dataList) {
-  
+thumb_cutoffs <- function (threshold, dataList, exp_col_num_AIC) {
+
   #rules of thumb to go off of
   thumb_vect = seq(0, 7, .5)
   
   #retrieve all data
   for (data in dataList) {
     #get each data set in list of file names
-    d = data_retrieve(data)
-    
+    #d = data_retrieve(data)
     thumb_vect = seq(0, 7, .5)
     
     ###rows of these matrices will go top to bottom p = .1, .2, ... , .5, .8
@@ -2244,75 +2243,80 @@ thumb_cutoffs <- function (threshold, dataList) {
     colnames(type4_data) = colnames(type3_data)
     
     #
-    row_count = 1
+   
     #get diff matrix
-    diff = diff(data, exp_col_num_AIC)
     
-    for (thumb in thumb_vect){
-      quad = quad_correct(diff, thumb)
+    for (p in c(.1, .2, .3, .4, .5, .8)){
+      diff = diff(data, exp_col_num_AIC)
       
-      ##
-      #type 3
-      ##
-      
-      #AIC
-      type3_data[row_count, 1] = quad[3, 1]
-      type3_data[row_count, 2] = quad[3, 4]
-      type3_data[row_count, 3] = quad[3, 7]
-      type3_data[row_count, 4] = quad[3, 10]
-      type3_data[row_count, 5] = quad[3, 13]
-      type3_data[row_count, 6] = quad[3, 16]
-      
-      #AICc
-      type3_data[row_count, 7] = quad[3, 2]
-      type3_data[row_count, 8] = quad[3, 5]
-      type3_data[row_count, 9] = quad[3, 8]
-      type3_data[row_count, 10] = quad[3, 11]
-      type3_data[row_count, 11] = quad[3, 14]
-      type3_data[row_count, 12] = quad[3, 17]
-      
-      #BIC
-      type3_data[row_count, 13] = quad[3, 3]
-      type3_data[row_count, 14] = quad[3, 6]
-      type3_data[row_count, 15] = quad[3, 9]
-      type3_data[row_count, 16] = quad[3, 12]
-      type3_data[row_count, 17] = quad[3, 15]
-      type3_data[row_count, 18] = quad[3, 18]
-      
-      ##
-      #type 4
-      ##
-      
-      #AIC
-      type4_data[row_count, 1] = quad[4, 1]
-      type4_data[row_count, 2] = quad[4, 4]
-      type4_data[row_count, 3] = quad[4, 7]
-      type4_data[row_count, 4] = quad[4, 10]
-      type4_data[row_count, 5] = quad[4, 13]
-      type4_data[row_count, 6] = quad[4, 16]
-      
-      #AICc
-      type4_data[row_count, 7] = quad[4, 2]
-      type4_data[row_count, 8] = quad[4, 5]
-      type4_data[row_count, 9] = quad[4, 8]
-      type4_data[row_count, 10] = quad[4, 11]
-      type4_data[row_count, 11] = quad[4, 14]
-      type4_data[row_count, 12] = quad[4, 17]
-      
-      #BIC
-      type4_data[row_count, 13] = quad[4, 3]
-      type4_data[row_count, 14] = quad[4, 6]
-      type4_data[row_count, 15] = quad[4, 9]
-      type4_data[row_count, 16] = quad[4, 12]
-      type4_data[row_count, 17] = quad[4, 15]
-      type4_data[row_count, 18] = quad[4, 18]
-      
-      
-      row_count = row_count + 1
+      row_count = 1
+      for (thumb in thumb_vect){
+        quad = quad_correct(diff, thumb)
+        
+        ##
+        #type 3
+        ##
+        
+        #AIC
+        type3_data[row_count, 1] = quad[3, 1]
+        type3_data[row_count, 2] = quad[3, 4]
+        type3_data[row_count, 3] = quad[3, 7]
+        type3_data[row_count, 4] = quad[3, 10]
+        type3_data[row_count, 5] = quad[3, 13]
+        type3_data[row_count, 6] = quad[3, 16]
+        
+        #AICc
+        type3_data[row_count, 7] = quad[3, 2]
+        type3_data[row_count, 8] = quad[3, 5]
+        type3_data[row_count, 9] = quad[3, 8]
+        type3_data[row_count, 10] = quad[3, 11]
+        type3_data[row_count, 11] = quad[3, 14]
+        type3_data[row_count, 12] = quad[3, 17]
+        
+        #BIC
+        type3_data[row_count, 13] = quad[3, 3]
+        type3_data[row_count, 14] = quad[3, 6]
+        type3_data[row_count, 15] = quad[3, 9]
+        type3_data[row_count, 16] = quad[3, 12]
+        type3_data[row_count, 17] = quad[3, 15]
+        type3_data[row_count, 18] = quad[3, 18]
+        
+        ##
+        #type 4
+        ##
+        
+        #AIC
+        type4_data[row_count, 1] = quad[4, 1]
+        type4_data[row_count, 2] = quad[4, 4]
+        type4_data[row_count, 3] = quad[4, 7]
+        type4_data[row_count, 4] = quad[4, 10]
+        type4_data[row_count, 5] = quad[4, 13]
+        type4_data[row_count, 6] = quad[4, 16]
+        
+        #AICc
+        type4_data[row_count, 7] = quad[4, 2]
+        type4_data[row_count, 8] = quad[4, 5]
+        type4_data[row_count, 9] = quad[4, 8]
+        type4_data[row_count, 10] = quad[4, 11]
+        type4_data[row_count, 11] = quad[4, 14]
+        type4_data[row_count, 12] = quad[4, 17]
+        
+        #BIC
+        type4_data[row_count, 13] = quad[4, 3]
+        type4_data[row_count, 14] = quad[4, 6]
+        type4_data[row_count, 15] = quad[4, 9]
+        type4_data[row_count, 16] = quad[4, 12]
+        type4_data[row_count, 17] = quad[4, 15]
+        type4_data[row_count, 18] = quad[4, 18]
+        
+        
+        row_count = row_count + 1
+      }
     }
-  }
-  print(type3_data)
-  print(type4_data)
+    print(type3_data)
+    print(type4_data)
+    }
+    
 }
 
 
