@@ -652,6 +652,44 @@ data_retrieve <- function(file_name){
   return(data)
 }
 
+####Mass Data Name Retrieve For CS Data####
+homo_mass_data <- function(base_data_name){
+  library(stringr)
+  # "N_2500_obs_5_sub_50_CS_sigma_1_p_0.1_means_0_0_0_0_0.csv"
+  str_pieces = str_split(base_data_name, "sigma_1", n = 3, simplify = TRUE)
+  temp = str_split(str_pieces[2], "p_0.1", simplify = TRUE)
+  str_pieces[2] = temp[1]
+  str_pieces[3] = temp[2]
+  
+  #data list will be list of 36 filenames to be called
+  data_list = c()
+  for (sigma in c(1, 3, 5, 10)){
+    for (p in c(1:5, 8)){
+      filename = paste(str_pieces[1], "sigma_", sigma, str_pieces[2], "p_0.", p, str_pieces[3], sep = "")
+      data_list = c(data_list, filename)
+    }
+  }
+  return(data_list)
+}
+####Mass Data Name Retrieve For Heteroskedastic Data####
+mass_data <- function(base_data_name){
+  library(stringr)
+  str_pieces = str_split(base_data_name, "sigma_1", n = 3, simplify = TRUE)
+  temp = str_split(str_pieces[2], "p_0.1", simplify = TRUE)
+  str_pieces[2] = temp[1]
+  str_pieces[3] = temp[2]
+  
+  #data list will be list of 36 filenames to be called
+  data_list = c()
+  for (ratio in c(1:5, 8)){
+    for (p in c(1:5, 8)){
+      filename = paste(str_pieces[1], "sigma_", ratio, str_pieces[2], "p_0.", p, str_pieces[3], sep = "")
+      data_list = c(data_list, filename)
+    }
+  }
+  return(data_list)
+}
+
 ####~~~~~~~~~~~~~~#Data Analysis Functions#~~~~~~~~~~~~~~~~~~####
 ####Data Analysis####
 #outputs 1-6 ranked least to greatest for each IC
@@ -1736,7 +1774,7 @@ thumb_plot34 <- function(data, data_name, exp_col_num_AIC){
   
   dev.off()
 }
-####3D Plots for heterosked vs. rho vs. type3/4####
+####3D Plots for heterosked. vs. rho vs. type3/4####
 graph_3D <- function(base_data_name, AIC_exp_num, thumb){
   ###!!!!!!!important if this is ur first time using
   ###make sure to un-comment the install packages and library lines
@@ -2153,6 +2191,11 @@ graph_3D <- function(base_data_name, AIC_exp_num, thumb){
   # )
 }
 
+######temp#####
+for (d in data){
+  dat = data_retrieve(d)
+  thumb_plot34(dat, d, 7)
+}
 
 
 
