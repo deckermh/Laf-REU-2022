@@ -1621,8 +1621,8 @@ thumb_plot34 <- function(data, data_name, exp_col_num_AIC){
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
     type = "b"
   )
-  abline(v=2, col="red")
-  abline(v=3, col="blue")
+  # abline(v=2, col="red")
+  # abline(v=3, col="blue")
   legend(
     "topleft",
     legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
@@ -1643,8 +1643,8 @@ thumb_plot34 <- function(data, data_name, exp_col_num_AIC){
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
     type = "b"
   )
-  abline(v=2, col="red")
-  abline(v=3, col="blue")
+  # abline(v=2, col="red")
+  # abline(v=3, col="blue")
   legend(
     "topleft",
     legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
@@ -1669,8 +1669,8 @@ thumb_plot34 <- function(data, data_name, exp_col_num_AIC){
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
     type = "b"
   )
-  abline(v=2, col="red")
-  abline(v=3, col="blue")
+  # abline(v=2, col="red")
+  # abline(v=3, col="blue")
   legend(
     "topleft",
     legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
@@ -1691,8 +1691,8 @@ thumb_plot34 <- function(data, data_name, exp_col_num_AIC){
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
     type = "b"
   )
-  abline(v=2, col="red")
-  abline(v=3, col="blue")
+  # abline(v=2, col="red")
+  # abline(v=3, col="blue")
   legend(
     "topleft",
     legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
@@ -1717,8 +1717,9 @@ thumb_plot34 <- function(data, data_name, exp_col_num_AIC){
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
     type = "b"
   )
-  abline(v=2, col="red")
-  abline(v=3, col="blue")
+  abline(v=1, col="red")
+  abline(v=3, col="green")
+  abline(v=5, col="blue")
   legend(
     "topleft",
     legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
@@ -1739,8 +1740,9 @@ thumb_plot34 <- function(data, data_name, exp_col_num_AIC){
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
     type = "b"
   )
-  abline(v=2, col="red")
-  abline(v=3, col="blue")
+  abline(v=1, col="red")
+  abline(v=3, col="green")
+  abline(v=5, col="blue")
   legend(
     "topleft",
     legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
