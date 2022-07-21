@@ -2171,11 +2171,7 @@ graph_3D <- function(base_data_name, AIC_exp_num, thumb){
   # )
 }
 
-######
-for (d in data){
-  dat = data_retrieve(d)
-  thumb_plot34(dat, 13)
-}
+
 
 
 
