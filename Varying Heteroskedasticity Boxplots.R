@@ -6,7 +6,7 @@
 #@param maxCount - the amount of total trials to run to see when each IC fails
 #@param rho - the level of correlation for the cov matrix
 #
-ICHeteroBoxplots <- function(N, type, maxCount = 100, rho = .7) {
+ICHeteroBoxplots <- function(N, type, maxCount = 100, rho = .7, n_obs = 3) {
   if (type != 1 && type != 2 && type != 3 && type != 4) {
     return(NULL)
   }
@@ -22,16 +22,17 @@ ICHeteroBoxplots <- function(N, type, maxCount = 100, rho = .7) {
   for (i in 1:8) {
     for (j in 1:N) {
       #generate CSH matrix with varying levels of heterosked.
-      sigmas = c(sqrt(i), sqrt(10), sqrt(10))
-      Sigma = makeCSH(3, rho, sigmas)
+      sigmas = c(sqrt(i), rep(sqrt(10), n_obs-1))
+      Sigma = makeCSH(n_obs, rho, sigmas)
       
       #get quad correct for data
-      res = results_matrix(maxCount, 3, 40, Sigma, c(0, 0, 0))
+      res = results_matrix(maxCount, n_obs, 40, Sigma, rep(0, n_obs))
       d = diff(res, 13)
       #rule of thumb is 3
       quad = quad_correct(d, 3, returnPercents = F)
       
-      #get success count for IC_CS fit
+      #get success count for IC_CS fit (change based on whether
+      #you want SIM or CS or whatever)
       AIC_CS_count = quad[type, 7]
       AICc_CS_count = quad[type, 8]
       BIC_CS_count = quad[type, 9]
@@ -93,4 +94,5 @@ ICHeteroBoxplots <- function(N, type, maxCount = 100, rho = .7) {
     names = seq(.1, .8, by = .1)
   )
 }
+
 
