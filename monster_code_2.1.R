@@ -879,6 +879,91 @@ quad_correct <- function(diff_matrix, thumb, returnPercents = TRUE){
   return(quad_matrix)
 }
 
+####New Quad Correct Analysis(Different Method####
+new_quad_correct <- function(diff_matrix, thumb, returnPercents = TRUE){
+  N = dim(diff_matrix)[1]
+  
+  count_matrix = matrix(0, 4, 3)
+  colnames(count_matrix) = c("AIC", "AICc", "BIC")
+  rownames(count_matrix) = c("Type1", "Type2", "Type3", "Type4")
+  
+  AIC_count_1 = 0
+  AIC_count_2 = 0
+  AIC_count_3 = 0
+  AIC_count_4 = 0
+  
+  AICc_count_1 = 0
+  AICc_count_2 = 0
+  AICc_count_3 = 0
+  AICc_count_4 = 0
+  
+  BIC_count_1 = 0
+  BIC_count_2 = 0
+  BIC_count_3 = 0
+  BIC_count_4 = 0
+  
+  for (i in 1:N){
+      sortedAIC = sort(diff_matrix[i, seq(16, from=1, by=3)])
+      sortedAICc = sort(diff_matrix[i, seq(17, from=2, by=3)])
+      sortedBIC = sort(diff_matrix[i, seq(18, from=3, by=3)])
+
+      ###AIC###
+      if (sortedAIC[1] < (-thumb)){
+        AIC_count_3 = AIC_count_3 + 1
+      }
+      if (sortedAIC[1] >= (-thumb) && sortedAIC[1] < 0){
+        AIC_count_2 = AIC_count_2 + 1
+      }
+      if (sortedAIC[1] == 0){
+        if (sortedAIC[2] <= thumb){
+          AIC_count_1 = AIC_count_1 + 1
+        }
+        if (sortedAIC[2] > thumb){
+          AIC_count_4 = AIC_count_4 + 1
+        }
+      }
+      
+      ###AICc###
+      if (sortedAICc[1] < (-thumb)){
+        AICc_count_3 = AICc_count_3 + 1
+      }
+      if (sortedAICc[1] >= (-thumb) && sortedAICc[1] < 0){
+        AICc_count_2 = AICc_count_2 + 1
+      }
+      if (sortedAICc[1] == 0){
+        if (sortedAICc[2] <= thumb){
+          AICc_count_1 = AICc_count_1 + 1
+        }
+        if (sortedAICc[2] > thumb){
+          AICc_count_4 = AICc_count_4 + 1
+        }
+      }
+      
+      ###BIC###
+      if (sortedBIC[1] < (-thumb)){
+        BIC_count_3 = BIC_count_3 + 1
+      }
+      if (sortedBIC[1] >= (-thumb) && sortedBIC[1] < 0){
+        BIC_count_2 = BIC_count_2 + 1
+      }
+      if (sortedBIC[1] == 0){
+        if (sortedBIC[2] <= thumb){
+          BIC_count_1 = BIC_count_1 + 1
+        }
+        if (sortedBIC[2] > thumb){
+          BIC_count_4 = BIC_count_4 + 1
+        }
+      }
+  }
+  
+  count_matrix[1,] = c(AIC_count_1, AICc_count_1, BIC_count_1)
+  count_matrix[2,] = c(AIC_count_2, AICc_count_2, BIC_count_2)
+  count_matrix[3,] = c(AIC_count_3, AICc_count_3, BIC_count_3)
+  count_matrix[4,] = c(AIC_count_4, AICc_count_4, BIC_count_4)
+  
+  return(count_matrix)
+}
+
 ####Quad Correct Bar Plot Gen####
 quad_correct_graph <- function(quad_data){
   ###outputs a pdf titled "(quad_data_name)_barplots.pdf"
@@ -2321,7 +2406,7 @@ graph_3D <- function(base_data_name, AIC_exp_num, thumb){
 ######temp#####
 for (d in data){
   dat = data_retrieve(d)
-  thumb_plot34(dat, d, 7)
+  thumb_plot34(dat, d, 13)
 }
 
 #
