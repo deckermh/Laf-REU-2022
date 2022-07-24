@@ -689,11 +689,11 @@ mass_data <- function(base_data_name){
   }
   return(data_list)
 }
-
 ####~~~~~~~~~~~~~~#Data Analysis Functions#~~~~~~~~~~~~~~~~~~####
 ####Data Analysis####
 #outputs 1-6 ranked least to greatest for each IC
 data_analysis <- function(results){
+ 
   dimension = dim(results)
   N = dimension[1]
   count_IC = dimension[2]
@@ -768,7 +768,6 @@ data_analysis <- function(results){
   
   return(sorted_results)
 }
-
 ####Difference Matrix####
 diff <- function(results, exp_col_num_AIC) {
   
@@ -825,7 +824,6 @@ diff <- function(results, exp_col_num_AIC) {
   
   return (diff_matrix)
 }
-
 ####Quad Correct Analysis####
 quad_correct <- function(diff_matrix, thumb, returnPercents = TRUE){
   N = dim(diff_matrix)[1]
@@ -879,6 +877,91 @@ quad_correct <- function(diff_matrix, thumb, returnPercents = TRUE){
   }
   
   return(quad_matrix)
+}
+
+####New Quad Correct Analysis(Different Method####
+new_quad_correct <- function(diff_matrix, thumb, returnPercents = TRUE){
+  N = dim(diff_matrix)[1]
+  
+  count_matrix = matrix(0, 4, 3)
+  colnames(count_matrix) = c("AIC", "AICc", "BIC")
+  rownames(count_matrix) = c("Type1", "Type2", "Type3", "Type4")
+  
+  AIC_count_1 = 0
+  AIC_count_2 = 0
+  AIC_count_3 = 0
+  AIC_count_4 = 0
+  
+  AICc_count_1 = 0
+  AICc_count_2 = 0
+  AICc_count_3 = 0
+  AICc_count_4 = 0
+  
+  BIC_count_1 = 0
+  BIC_count_2 = 0
+  BIC_count_3 = 0
+  BIC_count_4 = 0
+  
+  for (i in 1:N){
+      sortedAIC = sort(diff_matrix[i, seq(16, from=1, by=3)])
+      sortedAICc = sort(diff_matrix[i, seq(17, from=2, by=3)])
+      sortedBIC = sort(diff_matrix[i, seq(18, from=3, by=3)])
+
+      ###AIC###
+      if (sortedAIC[1] < (-thumb)){
+        AIC_count_3 = AIC_count_3 + 1
+      }
+      if (sortedAIC[1] >= (-thumb) && sortedAIC[1] < 0){
+        AIC_count_2 = AIC_count_2 + 1
+      }
+      if (sortedAIC[1] == 0){
+        if (sortedAIC[2] <= thumb){
+          AIC_count_1 = AIC_count_1 + 1
+        }
+        if (sortedAIC[2] > thumb){
+          AIC_count_4 = AIC_count_4 + 1
+        }
+      }
+      
+      ###AICc###
+      if (sortedAICc[1] < (-thumb)){
+        AICc_count_3 = AICc_count_3 + 1
+      }
+      if (sortedAICc[1] >= (-thumb) && sortedAICc[1] < 0){
+        AICc_count_2 = AICc_count_2 + 1
+      }
+      if (sortedAICc[1] == 0){
+        if (sortedAICc[2] <= thumb){
+          AICc_count_1 = AICc_count_1 + 1
+        }
+        if (sortedAICc[2] > thumb){
+          AICc_count_4 = AICc_count_4 + 1
+        }
+      }
+      
+      ###BIC###
+      if (sortedBIC[1] < (-thumb)){
+        BIC_count_3 = BIC_count_3 + 1
+      }
+      if (sortedBIC[1] >= (-thumb) && sortedBIC[1] < 0){
+        BIC_count_2 = BIC_count_2 + 1
+      }
+      if (sortedBIC[1] == 0){
+        if (sortedBIC[2] <= thumb){
+          BIC_count_1 = BIC_count_1 + 1
+        }
+        if (sortedBIC[2] > thumb){
+          BIC_count_4 = BIC_count_4 + 1
+        }
+      }
+  }
+  
+  count_matrix[1,] = c(AIC_count_1, AICc_count_1, BIC_count_1)
+  count_matrix[2,] = c(AIC_count_2, AICc_count_2, BIC_count_2)
+  count_matrix[3,] = c(AIC_count_3, AICc_count_3, BIC_count_3)
+  count_matrix[4,] = c(AIC_count_4, AICc_count_4, BIC_count_4)
+  
+  return(count_matrix)
 }
 
 ####Quad Correct Bar Plot Gen####
@@ -1516,7 +1599,7 @@ plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
   dev.off()
 }
 
-####Plot 3 and 4 as a Function of RULE OF THUMB####
+####Plot 3 and 4 as a Function of RULE OF THUMB (also attatches winner plots)####
 thumb_plot34 <- function(data, data_name, exp_col_num_AIC){
   ###data_list is a list(data1, data2, ... dataN) list of all sets of data of interest
   ###IMPORTANT ~ save ur data_list and name it before use in this function
@@ -1771,6 +1854,128 @@ thumb_plot34 <- function(data, data_name, exp_col_num_AIC){
     ncol = 3,
     cex = .6
   )
+  
+  ####################3
+  graphics::layout(mat = matrix(c(1, 2, 3), nrow = 3, ncol = 1))
+  
+  sorted_results = data_analysis(data)
+  N = dim(data)[1]
+  
+  winner_matrix = matrix(0, 3, 6)
+  colnames(winner_matrix) = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1")
+  rownames(winner_matrix) = c("AIC", "AICc", "BIC")
+  
+  for (row in 1:N){
+    for (col in c(1:3)){
+      col_num = c(1, 7, 13)
+      string = sorted_results[row, col_num[col]]
+      string = str_split(string, ", ", simplify = TRUE)
+      if (string[1] == "UN"){
+        winner_matrix[col, 1] = winner_matrix[col, 1] + 1
+      }
+      if (string[1] == "SIM"){
+        winner_matrix[col, 2] = winner_matrix[col, 2] + 1
+      }
+      if (string[1] == "CS"){
+        winner_matrix[col, 3] = winner_matrix[col, 3] + 1
+      }
+      if (string[1] == "AR1"){
+        winner_matrix[col, 4] = winner_matrix[col, 4] + 1
+      }
+      if (string[1] == "CSH"){
+        winner_matrix[col, 5] = winner_matrix[col, 5] + 1
+      }
+      if (string[1] == "ARH1"){
+        winner_matrix[col, 6] = winner_matrix[col, 6] + 1
+      }
+    }
+  }
+  print(winner_matrix)
+  plot1 = barplot(
+    winner_matrix[1, ],
+    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    main = "AIC Winner Dist.", 
+    ylim = c(0,2500)
+  )
+  text(plot1, winner_matrix[1,] + 170, winner_matrix[1,], font=2, col= "black")
+  plot2 = barplot(
+    winner_matrix[2, ],
+    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    main = "AICc Winner Dist.", 
+    ylim = c(0,2500)
+  )
+  text(plot2, winner_matrix[2,] + 170, winner_matrix[2,], font=2, col= "black")
+  plot3 = barplot(
+    winner_matrix[3, ],
+    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    main = "BIC Winner Dist.", 
+    ylim = c(0,2500)
+  )
+  text(plot3, winner_matrix[3,] + 170, winner_matrix[3,], font=2, col= "black")
+  
+  
+  
+  dev.off()
+}
+####Winner Proportion Barplots####
+winner_barplots <- function(data, data_name){
+  pdf(file=paste("winners", "_", data_name, ".pdf", sep = ""))
+  graphics::layout(mat = matrix(c(1, 2, 3), nrow = 3, ncol = 1))
+  
+  sorted_results = data_analysis(data)
+  N = dim(data)[1]
+  
+  winner_matrix = matrix(0, 3, 6)
+  colnames(winner_matrix) = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1")
+  rownames(winner_matrix) = c("AIC", "AICc", "BIC")
+  
+  for (row in 1:N){
+    for (col in c(1:3)){
+      col_num = c(1, 7, 13)
+      string = sorted_results[row, col_num[col]]
+      string = str_split(string, ", ", simplify = TRUE)
+      if (string[1] == "UN"){
+        winner_matrix[col, 1] = winner_matrix[col, 1] + 1
+      }
+      if (string[1] == "SIM"){
+        winner_matrix[col, 2] = winner_matrix[col, 2] + 1
+      }
+      if (string[1] == "CS"){
+        winner_matrix[col, 3] = winner_matrix[col, 3] + 1
+      }
+      if (string[1] == "AR1"){
+        winner_matrix[col, 4] = winner_matrix[col, 4] + 1
+      }
+      if (string[1] == "CSH"){
+        winner_matrix[col, 5] = winner_matrix[col, 5] + 1
+      }
+      if (string[1] == "ARH1"){
+        winner_matrix[col, 6] = winner_matrix[col, 6] + 1
+      }
+    }
+  }
+  print(winner_matrix)
+  plot1 = barplot(
+    winner_matrix[1, ],
+    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    main = "AIC Winner Dist.", 
+    ylim = c(0,2500)
+  )
+  text(plot1, winner_matrix[1,] + 170, winner_matrix[1,], font=2, col= "black")
+  plot2 = barplot(
+    winner_matrix[2, ],
+    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    main = "AICc Winner Dist.", 
+    ylim = c(0,2500)
+  )
+  text(plot2, winner_matrix[2,] + 170, winner_matrix[2,], font=2, col= "black")
+  plot3 = barplot(
+    winner_matrix[3, ],
+    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
+    main = "BIC Winner Dist.", 
+    ylim = c(0,2500)
+  )
+  text(plot3, winner_matrix[3,] + 170, winner_matrix[3,], font=2, col= "black")
   
   dev.off()
 }
@@ -2191,10 +2396,17 @@ graph_3D <- function(base_data_name, AIC_exp_num, thumb){
   # )
 }
 
+
+
+
+
+
+
+
 ######temp#####
 for (d in data){
   dat = data_retrieve(d)
-  thumb_plot34(dat, d, 7)
+  thumb_plot34(dat, d, 13)
 }
 
 #
@@ -2203,16 +2415,15 @@ for (d in data){
 # @param threshold: could be .98, .9, .8. 
 # @param dataList: List of names of CSV files
 #
-thumb_cutoffs <- function (threshold, dataList) {
-  
+thumb_cutoffs <- function (threshold, dataList, exp_col_num_AIC) {
+
   #rules of thumb to go off of
   thumb_vect = seq(0, 7, .5)
   
   #retrieve all data
   for (data in dataList) {
     #get each data set in list of file names
-    d = data_retrieve(data)
-    
+    #d = data_retrieve(data)
     thumb_vect = seq(0, 7, .5)
     
     ###rows of these matrices will go top to bottom p = .1, .2, ... , .5, .8
@@ -2244,75 +2455,80 @@ thumb_cutoffs <- function (threshold, dataList) {
     colnames(type4_data) = colnames(type3_data)
     
     #
-    row_count = 1
+   
     #get diff matrix
-    diff = diff(data, exp_col_num_AIC)
     
-    for (thumb in thumb_vect){
-      quad = quad_correct(diff, thumb)
+    for (p in c(.1, .2, .3, .4, .5, .8)){
+      diff = diff(data, exp_col_num_AIC)
       
-      ##
-      #type 3
-      ##
-      
-      #AIC
-      type3_data[row_count, 1] = quad[3, 1]
-      type3_data[row_count, 2] = quad[3, 4]
-      type3_data[row_count, 3] = quad[3, 7]
-      type3_data[row_count, 4] = quad[3, 10]
-      type3_data[row_count, 5] = quad[3, 13]
-      type3_data[row_count, 6] = quad[3, 16]
-      
-      #AICc
-      type3_data[row_count, 7] = quad[3, 2]
-      type3_data[row_count, 8] = quad[3, 5]
-      type3_data[row_count, 9] = quad[3, 8]
-      type3_data[row_count, 10] = quad[3, 11]
-      type3_data[row_count, 11] = quad[3, 14]
-      type3_data[row_count, 12] = quad[3, 17]
-      
-      #BIC
-      type3_data[row_count, 13] = quad[3, 3]
-      type3_data[row_count, 14] = quad[3, 6]
-      type3_data[row_count, 15] = quad[3, 9]
-      type3_data[row_count, 16] = quad[3, 12]
-      type3_data[row_count, 17] = quad[3, 15]
-      type3_data[row_count, 18] = quad[3, 18]
-      
-      ##
-      #type 4
-      ##
-      
-      #AIC
-      type4_data[row_count, 1] = quad[4, 1]
-      type4_data[row_count, 2] = quad[4, 4]
-      type4_data[row_count, 3] = quad[4, 7]
-      type4_data[row_count, 4] = quad[4, 10]
-      type4_data[row_count, 5] = quad[4, 13]
-      type4_data[row_count, 6] = quad[4, 16]
-      
-      #AICc
-      type4_data[row_count, 7] = quad[4, 2]
-      type4_data[row_count, 8] = quad[4, 5]
-      type4_data[row_count, 9] = quad[4, 8]
-      type4_data[row_count, 10] = quad[4, 11]
-      type4_data[row_count, 11] = quad[4, 14]
-      type4_data[row_count, 12] = quad[4, 17]
-      
-      #BIC
-      type4_data[row_count, 13] = quad[4, 3]
-      type4_data[row_count, 14] = quad[4, 6]
-      type4_data[row_count, 15] = quad[4, 9]
-      type4_data[row_count, 16] = quad[4, 12]
-      type4_data[row_count, 17] = quad[4, 15]
-      type4_data[row_count, 18] = quad[4, 18]
-      
-      
-      row_count = row_count + 1
+      row_count = 1
+      for (thumb in thumb_vect){
+        quad = quad_correct(diff, thumb)
+        
+        ##
+        #type 3
+        ##
+        
+        #AIC
+        type3_data[row_count, 1] = quad[3, 1]
+        type3_data[row_count, 2] = quad[3, 4]
+        type3_data[row_count, 3] = quad[3, 7]
+        type3_data[row_count, 4] = quad[3, 10]
+        type3_data[row_count, 5] = quad[3, 13]
+        type3_data[row_count, 6] = quad[3, 16]
+        
+        #AICc
+        type3_data[row_count, 7] = quad[3, 2]
+        type3_data[row_count, 8] = quad[3, 5]
+        type3_data[row_count, 9] = quad[3, 8]
+        type3_data[row_count, 10] = quad[3, 11]
+        type3_data[row_count, 11] = quad[3, 14]
+        type3_data[row_count, 12] = quad[3, 17]
+        
+        #BIC
+        type3_data[row_count, 13] = quad[3, 3]
+        type3_data[row_count, 14] = quad[3, 6]
+        type3_data[row_count, 15] = quad[3, 9]
+        type3_data[row_count, 16] = quad[3, 12]
+        type3_data[row_count, 17] = quad[3, 15]
+        type3_data[row_count, 18] = quad[3, 18]
+        
+        ##
+        #type 4
+        ##
+        
+        #AIC
+        type4_data[row_count, 1] = quad[4, 1]
+        type4_data[row_count, 2] = quad[4, 4]
+        type4_data[row_count, 3] = quad[4, 7]
+        type4_data[row_count, 4] = quad[4, 10]
+        type4_data[row_count, 5] = quad[4, 13]
+        type4_data[row_count, 6] = quad[4, 16]
+        
+        #AICc
+        type4_data[row_count, 7] = quad[4, 2]
+        type4_data[row_count, 8] = quad[4, 5]
+        type4_data[row_count, 9] = quad[4, 8]
+        type4_data[row_count, 10] = quad[4, 11]
+        type4_data[row_count, 11] = quad[4, 14]
+        type4_data[row_count, 12] = quad[4, 17]
+        
+        #BIC
+        type4_data[row_count, 13] = quad[4, 3]
+        type4_data[row_count, 14] = quad[4, 6]
+        type4_data[row_count, 15] = quad[4, 9]
+        type4_data[row_count, 16] = quad[4, 12]
+        type4_data[row_count, 17] = quad[4, 15]
+        type4_data[row_count, 18] = quad[4, 18]
+        
+        
+        row_count = row_count + 1
+      }
     }
-  }
-  print(type3_data)
-  print(type4_data)
+    print(type3_data)
+    print(type4_data)
+    }
+    
 }
 
 
