@@ -41,9 +41,6 @@ vignettes/*.pdf
 # ignore png files
 *.png
 *.csv
+*.Rhistory
 quad_matrix_varying_ratios/graph of type 4 success as min max varies.xlsx
-.Rhistory
-.Rhistory
-.Rhistory
-.Rhistory
 *.xlsx
