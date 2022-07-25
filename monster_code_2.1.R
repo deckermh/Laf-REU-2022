@@ -956,10 +956,19 @@ new_quad_correct <- function(diff_matrix, thumb, returnPercents = TRUE){
       }
   }
   
-  count_matrix[1,] = c(AIC_count_1/N, AICc_count_1/N, BIC_count_1/N)
-  count_matrix[2,] = c(AIC_count_2/N, AICc_count_2/N, BIC_count_2/N)
-  count_matrix[3,] = c(AIC_count_3/N, AICc_count_3/N, BIC_count_3/N)
-  count_matrix[4,] = c(AIC_count_4/N, AICc_count_4/N, BIC_count_4/N)
+  if (returnPercents == TRUE){
+    count_matrix[1,] = c(AIC_count_1/N, AICc_count_1/N, BIC_count_1/N)
+    count_matrix[2,] = c(AIC_count_2/N, AICc_count_2/N, BIC_count_2/N)
+    count_matrix[3,] = c(AIC_count_3/N, AICc_count_3/N, BIC_count_3/N)
+    count_matrix[4,] = c(AIC_count_4/N, AICc_count_4/N, BIC_count_4/N)
+  }
+  
+  else{
+    count_matrix[1,] = c(AIC_count_1, AICc_count_1, BIC_count_1)
+    count_matrix[2,] = c(AIC_count_2, AICc_count_2, BIC_count_2)
+    count_matrix[3,] = c(AIC_count_3, AICc_count_3, BIC_count_3)
+    count_matrix[4,] = c(AIC_count_4, AICc_count_4, BIC_count_4)
+  }
   
   return(count_matrix)
 }
@@ -1352,7 +1361,7 @@ overlap_histograms <- function(data, exp_col_num_AIC){
   dev.off()
 }
 ####Plot 3 and 4 as a Function of a Desired Lever####
-plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
+plot34 <- function(data_list, data_name, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
   ###data_list is a list(data1, data2, ... dataN) list of all sets of data of interest
   ###IMPORTANT ~ save ur data_list and name it before use in this function
   ###b/c this name is used to create the pdf file name
@@ -1361,8 +1370,6 @@ plot34 <- function(data_list, x_vect, x_vect_var_name, exp_col_num_AIC, thumb){
   ###for example for varying p would input  x_vect = c(.1, .2, .3, .4, .5, .8)
   ###which plots lines for 3 and 4 as a function of p
   ###length of data_list and x_vect should be equal
-  
-  data_name = deparse(substitute(data_list))
   
   pdf(file=paste(data_name, "_", "type34", ".pdf", sep = ""))
   graphics::layout(mat = matrix(c(1, 3, 5, 2, 4, 6), nrow = 3, ncol = 2))
@@ -2021,6 +2028,88 @@ plot_new_thumb <- function(data, data_name, exp_col_num_AIC){
     cex = .75
   )
   
+  ##
+  #Type 1,4 Plots
+  ##
+  
+  ##
+  #AIC Plots
+  ##
+  
+  matplot(
+    thumb_vect,
+    (AIC_data[,1] + AIC_data[,4]), 
+    main = "AIC Minimum Model Sucess Rate",
+    xlab = "Rule of Thumb",
+    ylab = "Proportion",
+    pch = 19,
+    col = c("green"),
+    type = "b",
+    ylim = c(0, 1.2)
+  )
+  # abline(v=2, col="red")
+  # abline(v=3, col="blue")
+  legend(
+    "topleft",
+    legend = c("Types 1 and 4 Sum"),
+    fill = c("green"),
+    box.lty=0,
+    ncol = 1,
+    cex = .75
+  )
+  
+  ##
+  #AICc Plots
+  ##
+  
+  matplot(
+    thumb_vect,
+    (AICc_data[,1] + AICc_data[,4]), 
+    main = "AICc Minimum Model Sucess Rate",
+    xlab = "Rule of Thumb",
+    ylab = "Proportion",
+    pch = 19,
+    col = c("green"),
+    type = "b",
+    ylim = c(0, 1.2)
+  )
+  # abline(v=2, col="red")
+  # abline(v=3, col="blue")
+  legend(
+    "topleft",
+    legend = c("Types 1 and 4 Sum"),
+    fill = c("green"),
+    box.lty=0,
+    ncol = 1,
+    cex = .75
+  )
+  
+  ##
+  #AIC Plots
+  ##
+  
+  matplot(
+    thumb_vect,
+    (BIC_data[,1] + BIC_data[,4]), 
+    main = "BIC Minimum Model Sucess Rate",
+    xlab = "Rule of Thumb",
+    ylab = "Proportion",
+    pch = 19,
+    col = c("green"),
+    type = "b",
+    ylim = c(0, 1.2)
+  )
+  # abline(v=2, col="red")
+  # abline(v=3, col="blue")
+  legend(
+    "topleft",
+    legend = c("Types 1 and 4 Sum"),
+    fill = c("green"),
+    box.lty=0,
+    ncol = 1,
+    cex = .75
+  )
+  
 }
 ####Winner Proportion Barplots####
 winner_barplots <- function(data, data_name){
@@ -2059,7 +2148,7 @@ winner_barplots <- function(data, data_name){
       }
     }
   }
-  print(winner_matrix)
+  
   plot1 = barplot(
     winner_matrix[1, ],
     col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
@@ -2101,9 +2190,235 @@ plot_all <- function(data, data_name, exp_col_num_AIC){
   winner_barplots(data, data_name)
   
   ###PLOT 1234 NEW QUAD###
-  graphics::layout(mat = matrix(c(1, 2, 3, 0, 0, 0), nrow = 3, ncol = 2))
+  graphics::layout(mat = matrix(c(1, 2, 3, 4, 5, 6), nrow = 3, ncol = 2))
   
   plot_new_thumb(data, data_name, exp_col_num_AIC)
+  
+  dev.off()
+}
+####Plot Success and Failure Magnitudes and Differences####
+magnitude_of_success_plots <- function(data_name_list, var_of_int_vect, var_of_int_name, exp_col_num_AIC){
+  ###for heterosked. use var_of_int_name = "ratio of min to max standard deviation"
+  
+  library(stringr)
+  
+  if (var_of_int_name == "Rho" | var_of_int_name == "rho" | var_of_int_name == "p"){
+    var_of_int_name = expression(rho)
+  }
+  
+  base_data_name = unlist(data_name_list)[1]
+  name = str_split(base_data_name, "_means", simplify = TRUE)[1]
+  filename = paste(name, "_mag_of_success", ".pdf", sep = "")
+  pdf(filename)
+  
+  AIC_type23_matrix = matrix(0, length(var_of_int_vect), 2)
+  colnames(AIC_type23_matrix) = c("mean of diff", "# times")
+  rownames(AIC_type23_matrix) = var_of_int_vect
+  
+  AICc_type23_matrix = AIC_type23_matrix
+  BIC_type23_matrix = AIC_type23_matrix
+  
+  AIC_type14_matrix = AIC_type23_matrix
+  AICc_type14_matrix = AIC_type23_matrix
+  BIC_type14_matrix = AIC_type23_matrix
+  
+  row = 1
+  for (data in data_name_list){
+    data = data_retrieve(data)
+    
+    diff = diff(data, exp_col_num_AIC)
+    N = dim(diff)[1]
+    
+    AIC_type23_count = 0
+    AIC_type23_total_diff = 0
+    
+    AICc_type23_count = 0
+    AICc_type23_total_diff = 0
+    
+    BIC_type23_count = 0
+    BIC_type23_total_diff = 0
+    
+    AIC_type14_count = 0
+    AIC_type14_total_diff = 0
+    
+    AICc_type14_count = 0
+    AICc_type14_total_diff = 0
+    
+    BIC_type14_count = 0
+    BIC_type14_total_diff = 0
+    
+    for (i in 1:N){
+      sortedAIC = sort(diff[i, seq(16, from=1, by=3)])
+      sortedAICc = sort(diff[i, seq(17, from=2, by=3)])
+      sortedBIC = sort(diff[i, seq(18, from=3, by=3)])
+      
+      ###AIC###
+      if (sortedAIC[1] < 0){
+        AIC_type23_count = AIC_type23_count + 1
+        AIC_type23_total_diff = AIC_type23_total_diff + sortedAIC[1]
+      }
+      if (sortedAIC[1] == 0){
+        AIC_type14_count = AIC_type14_count + 1
+        AIC_type14_total_diff = AIC_type14_total_diff + sortedAIC[2]
+      }
+      
+      ###AICc###
+      if (sortedAICc[1] < 0){
+        AICc_type23_count = AICc_type23_count + 1
+        AICc_type23_total_diff = AICc_type23_total_diff + sortedAICc[1]
+      }
+      if (sortedAICc[1] == 0){
+        AICc_type14_count = AICc_type14_count + 1
+        AICc_type14_total_diff = AICc_type14_total_diff + sortedAICc[2]
+      }
+      
+      ###BIC###
+      if (sortedBIC[1] < 0){
+        BIC_type23_count = BIC_type23_count + 1
+        BIC_type23_total_diff = BIC_type23_total_diff + sortedBIC[1]
+      }
+      if (sortedBIC[1] == 0){
+        BIC_type14_count = BIC_type14_count + 1
+        BIC_type14_total_diff = BIC_type14_total_diff + sortedBIC[2]
+      }
+    }
+    
+    AIC_type23_matrix[row, 1] = (-1)*AIC_type23_total_diff/AIC_type23_count
+    AIC_type23_matrix[row, 2] = AIC_type23_count
+    
+    AICc_type23_matrix[row, 1] = (-1)*AICc_type23_total_diff/AICc_type23_count
+    AICc_type23_matrix[row, 2] = AICc_type23_count
+    
+    BIC_type23_matrix[row, 1] = (-1)*BIC_type23_total_diff/BIC_type23_count
+    BIC_type23_matrix[row, 2] = BIC_type23_count
+    
+    AIC_type14_matrix[row, 1] = AIC_type14_total_diff/AIC_type14_count
+    AIC_type14_matrix[row, 2] = AIC_type14_count
+    
+    AICc_type14_matrix[row, 1] = AICc_type14_total_diff/AICc_type14_count
+    AICc_type14_matrix[row, 2] = AICc_type14_count
+    
+    BIC_type14_matrix[row, 1] = BIC_type14_total_diff/BIC_type14_count
+    BIC_type14_matrix[row, 2] = BIC_type14_count
+    
+    row = row + 1
+  }
+  
+  
+  print(AIC_type23_matrix)
+  print(AICc_type23_matrix)
+  print(BIC_type23_matrix)
+  print(AIC_type14_matrix)
+  print(AICc_type14_matrix)
+  print(BIC_type14_matrix)
+  
+  ##
+  #AIC Plot
+  ##
+  
+  plot(
+    var_of_int_vect,
+    AIC_type23_matrix[,1],
+    main = "Frequency of (In)correct Model Selection and Magnitude of \n AIC Deviance From Closest Competing Model",
+    xlab = var_of_int_name,
+    xlim = c(0,.9),
+    ylim = c(min(AIC_type23_matrix[,1], AIC_type14_matrix[,1])-.1, max(AIC_type23_matrix[,1], AIC_type14_matrix[,1])+.1),
+    ylab = "Mean of AIC Distances",
+    pch = 20,
+    cex = c(AIC_type23_matrix[,2]/300),
+    col = c("purple"),
+    type = "b"
+  )
+  points(
+    var_of_int_vect,
+    AIC_type14_matrix[,1],
+    pch = 20,
+    cex = c(AIC_type14_matrix[,2]/300),
+    col = c("green"),
+    type = "b"
+  )
+  # abline(v=2, col="red")
+  # abline(v=3, col="blue")
+  legend(
+    "topleft",
+    legend = c("Incorrect Model Selected", "Correct Model Selected"),
+    fill = c("purple", "green"),
+    box.lty=0,
+    ncol = 1,
+    cex = .75
+  )
+  
+  ##
+  #AICc Plot
+  ##
+  
+  plot(
+    var_of_int_vect,
+    AICc_type23_matrix[,1],
+    main = "Frequency of (In)correct Model Selection and Magnitude of \n AICc Deviance From Closest Competing Model",
+    xlab = var_of_int_name,
+    xlim = c(0,.9),
+    ylim = c(min(AICc_type23_matrix[,1], AICc_type14_matrix[,1])-.1, max(AICc_type23_matrix[,1], AICc_type14_matrix[,1])+.1),
+    ylab = "Mean of AICc Distances",
+    pch = 20,
+    cex = c(AICc_type23_matrix[,2]/300),
+    col = c("purple"),
+    type = "b"
+  )
+  points(
+    var_of_int_vect,
+    AICc_type14_matrix[,1],
+    pch = 20,
+    cex = c(AICc_type14_matrix[,2]/300),
+    col = c("green"),
+    type = "b"
+  )
+  # abline(v=2, col="red")
+  # abline(v=3, col="blue")
+  legend(
+    "topleft",
+    legend = c("Incorrect Model Selected", "Correct Model Selected"),
+    fill = c("purple", "green"),
+    box.lty=0,
+    ncol = 1,
+    cex = .75
+  )
+  
+  ##
+  #BIC Plot
+  ##
+  
+  plot(
+    var_of_int_vect,
+    BIC_type23_matrix[,1],
+    main = "Frequency of (In)correct Model Selection and Magnitude of \n BIC Deviance From Closest Competing Model",
+    xlab = var_of_int_name,
+    xlim = c(0,.9),
+    ylim = c(min(BIC_type23_matrix[,1], BIC_type14_matrix[,1])-.1, max(BIC_type23_matrix[,1], BIC_type14_matrix[,1])+.1),
+    ylab = "Mean of BIC Distances",
+    pch = 20,
+    cex = c(BIC_type23_matrix[,2]/300),
+    col = c("purple"),
+    type = "b"
+  )
+  points(
+    var_of_int_vect,
+    BIC_type14_matrix[,1],
+    pch = 20,
+    cex = c(BIC_type14_matrix[,2]/300),
+    col = c("green"),
+    type = "b"
+  )
+  # abline(v=2, col="red")
+  # abline(v=3, col="blue")
+  legend(
+    "topleft",
+    legend = c("Incorrect Model Selected", "Correct Model Selected"),
+    fill = c("purple", "green"),
+    box.lty=0,
+    ncol = 1,
+    cex = .75
+  )
   
   dev.off()
 }
@@ -2532,9 +2847,9 @@ graph_3D <- function(base_data_name, AIC_exp_num, thumb){
 
 
 ######temp#####
-for (d in data){
+for (d in data_list){
   dat = data_retrieve(d)
-  thumb_plot34(dat, d, 13)
+  plot_all(dat, d, 7)
 }
 
 
