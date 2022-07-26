@@ -2173,29 +2173,177 @@ winner_barplots <- function(data, data_name){
   
   #dev.off()
 }
+####IC Score Distribution Histograms####
+six_hist <- function(data){
+  c1 <- rgb(160,32,240,max = 255, alpha = 110, names = "purple")
+  c2 <- rgb(255,62,150, max = 255, alpha = 110, names = "violetred1")
+  c3 <- rgb(0,238,0,max = 255, alpha = 110, names = "green2")
+  c4 <- rgb(0,245,255, max = 255, alpha = 110, names = "turquoise1")
+  c5 <- rgb(28,134,238,max = 255, alpha = 110, names = "dodgerblue2")
+  c6 <- rgb(255,215,0, max = 255, alpha = 110, names = "gold")
+  
+  ##
+  #AIC
+  ##
+  min = min(c(data[,1], data[,4], data[,7], data[,10], data[,13], data[,16])) - 10
+  max = max(c(data[,1], data[,4], data[,7], data[,10], data[,13], data[,16])) + 10
+  
+  breakpoints = pretty(min:max, n = 100)
+  
+  hist1 = hist(data[, 1], breaks = breakpoints, plot = FALSE)
+  hist2 = hist(data[, 4], breaks = breakpoints, plot = FALSE)
+  hist3 = hist(data[, 7], breaks = breakpoints, plot = FALSE)
+  hist4 = hist(data[, 10], breaks = breakpoints, plot = FALSE)
+  hist5 = hist(data[, 13], breaks = breakpoints, plot = FALSE)
+  hist6 = hist(data[, 16], breaks = breakpoints, plot = FALSE)
+  plot(
+    hist1,
+    xlab = "AIC Score",
+    xlim = c(min-10, max+40),
+    main = "AIC Score Distribution for Each Model Fit",
+    col = c1
+  )
+  plot(hist2, col = c2, add = TRUE)
+  plot(hist3, col = c3, add = TRUE)
+  plot(hist4, col = c4, add = TRUE)
+  plot(hist5, col = c5, add = TRUE)
+  plot(hist6, col = c6, add = TRUE)
+  
+  abline(v = min(data[,1]), col = c1)
+  abline(v = min(data[,4]), col = c2)
+  abline(v = min(data[,7]), col = c3)
+  abline(v = min(data[,10]), col = c4)
+  abline(v = min(data[,13]), col = c5)
+  abline(v = min(data[,16]), col = c6)
+  
+  legend(
+    "topright",
+    legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
+    fill = c(c1, c2, c3, c4, c5, c6),
+    box.lty = 0,
+    ncol = 2,
+    cex = .8
+  )
+  
+  ##
+  #AICc
+  ##
+  min = min(c(data[,2], data[,5], data[,8], data[,11], data[,14], data[,17])) - 10
+  max = max(c(data[,2], data[,5], data[,8], data[,11], data[,14], data[,17])) + 10
+  
+  breakpoints = pretty(min:max, n = 100)
+  
+  print(breakpoints)
+  
+  hist1 = hist(data[, 2], breaks = breakpoints, plot = FALSE)
+  hist2 = hist(data[, 5], breaks = breakpoints, plot = FALSE)
+  hist3 = hist(data[, 8], breaks = breakpoints, plot = FALSE)
+  hist4 = hist(data[, 11], breaks = breakpoints, plot = FALSE)
+  hist5 = hist(data[, 14], breaks = breakpoints, plot = FALSE)
+  hist6 = hist(data[, 17], breaks = breakpoints, plot = FALSE)
+  plot(
+    hist1,
+    xlab = "AICc Score",
+    xlim = c(min-10, max+40),
+    main = "AICc Score Distribution for Each Model Fit",
+    col = c1
+  )
+  plot(hist2, col = c2, add = TRUE)
+  plot(hist3, col = c3, add = TRUE)
+  plot(hist4, col = c4, add = TRUE)
+  plot(hist5, col = c5, add = TRUE)
+  plot(hist6, col = c6, add = TRUE)
+  
+  abline(v = min(data[,2]), col = c1)
+  abline(v = min(data[,5]), col = c2)
+  abline(v = min(data[,8]), col = c3)
+  abline(v = min(data[,11]), col = c4)
+  abline(v = min(data[,14]), col = c5)
+  abline(v = min(data[,17]), col = c6)
+  
+  legend(
+    "topright",
+    legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
+    fill = c(c1, c2, c3, c4, c5, c6),
+    box.lty = 0,
+    ncol = 2,
+    cex = .8
+  )
+  
+  
+  ##
+  #BIC
+  ##
+  min = min(c(data[,3], data[,6], data[,9], data[,12], data[,15], data[,18])) - 10
+  max = max(c(data[,3], data[,6], data[,9], data[,12], data[,15], data[,18])) + 10
+  
+  breakpoints = pretty(min:max, n = 100)
+  
+  hist1 = hist(data[, 3], breaks = breakpoints, plot = FALSE)
+  hist2 = hist(data[, 6], breaks = breakpoints, plot = FALSE)
+  hist3 = hist(data[, 9], breaks = breakpoints, plot = FALSE)
+  hist4 = hist(data[, 12], breaks = breakpoints, plot = FALSE)
+  hist5 = hist(data[, 15], breaks = breakpoints, plot = FALSE)
+  hist6 = hist(data[, 18], breaks = breakpoints, plot = FALSE)
+  plot(
+    hist1,
+    xlab = "BIC Score",
+    xlim = c(min-10, max+40),
+    main = "BIC Score Distribution for Each Model Fit",
+    col = c1
+  )
+  plot(hist2, col = c2, add = TRUE)
+  plot(hist3, col = c3, add = TRUE)
+  plot(hist4, col = c4, add = TRUE)
+  plot(hist5, col = c5, add = TRUE)
+  plot(hist6, col = c6, add = TRUE)
+  
+  abline(v = min(data[,3]), col = c1)
+  abline(v = min(data[,6]), col = c2)
+  abline(v = min(data[,9]), col = c3)
+  abline(v = min(data[,12]), col = c4)
+  abline(v = min(data[,15]), col = c5)
+  abline(v = min(data[,18]), col = c6)
+  
+  legend(
+    "topright",
+    legend = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1"),
+    fill = c(c1, c2, c3, c4, c5, c6),
+    box.lty = 0,
+    ncol = 2,
+    cex = .8
+  )
+  dev.off()
+}
 ####Plot All to PDF####
 plot_all <- function(data, data_name, exp_col_num_AIC){
   
   library(stringr)
   pdf(file=paste(data_name, "_", "plots", ".pdf", sep = ""))
   
-  ###Thumb vs. Type 3/4###
-  graphics::layout(mat = matrix(c(1, 3, 5, 2, 4, 6), nrow = 3, ncol = 2))
-  
-  thumb_plot34(data, data_name, exp_col_num_AIC)
-  
-  ###WINNER PLOTS###
+  ###PLOT 6 HIST###
   graphics::layout(mat = matrix(c(1, 2, 3), nrow = 3, ncol = 1))
   
-  winner_barplots(data, data_name)
+  six_hist(data)
   
   ###PLOT 1234 NEW QUAD###
   graphics::layout(mat = matrix(c(1, 2, 3, 4, 5, 6), nrow = 3, ncol = 2))
   
   plot_new_thumb(data, data_name, exp_col_num_AIC)
   
+  ###WINNER PLOTS###
+  graphics::layout(mat = matrix(c(1, 2, 3), nrow = 3, ncol = 1))
+  
+  winner_barplots(data, data_name)
+  
+  ###Thumb vs. Type 3/4###
+  graphics::layout(mat = matrix(c(1, 3, 5, 2, 4, 6), nrow = 3, ncol = 2))
+  
+  thumb_plot34(data, data_name, exp_col_num_AIC)
+  
   dev.off()
 }
+
 ####Plot Success and Failure Magnitudes and Differences####
 magnitude_of_success_plots <- function(data_name_list, var_of_int_vect, var_of_int_name, exp_col_num_AIC){
   ###for heterosked. use var_of_int_name = "ratio of min to max standard deviation"
@@ -2283,22 +2431,53 @@ magnitude_of_success_plots <- function(data_name_list, var_of_int_vect, var_of_i
       }
     }
     
-    AIC_type23_matrix[row, 1] = (-1)*AIC_type23_total_diff/AIC_type23_count
+    if (AIC_type23_count == 0){
+      AIC_type23_matrix[row, 1] = 0
+    }
+    else{
+      AIC_type23_matrix[row, 1] = (-1)*AIC_type23_total_diff/AIC_type23_count
+    }
     AIC_type23_matrix[row, 2] = AIC_type23_count
     
-    AICc_type23_matrix[row, 1] = (-1)*AICc_type23_total_diff/AICc_type23_count
+    
+    if (AICc_type23_count == 0){
+      AICc_type23_matrix[row, 1] = 0
+    }
+    else{
+      AICc_type23_matrix[row, 1] = (-1)*AICc_type23_total_diff/AICc_type23_count
+    }
     AICc_type23_matrix[row, 2] = AICc_type23_count
     
-    BIC_type23_matrix[row, 1] = (-1)*BIC_type23_total_diff/BIC_type23_count
+    if (BIC_type23_count == 0){
+      BIC_type23_matrix[row, 1] = 0
+    }
+    else{
+      BIC_type23_matrix[row, 1] = (-1)*BIC_type23_total_diff/BIC_type23_count
+    }
     BIC_type23_matrix[row, 2] = BIC_type23_count
     
-    AIC_type14_matrix[row, 1] = AIC_type14_total_diff/AIC_type14_count
+    if (AIC_type14_count == 0){
+      AIC_type14_matrix[row, 1] = 0
+    }
+    else{
+      AIC_type14_matrix[row, 1] = AIC_type14_total_diff/AIC_type14_count
+    }
     AIC_type14_matrix[row, 2] = AIC_type14_count
     
-    AICc_type14_matrix[row, 1] = AICc_type14_total_diff/AICc_type14_count
+    if (AICc_type14_count == 0){
+      AICc_type14_matrix[row, 1] = 0
+    }
+    else{
+      AICc_type14_matrix[row, 1] = AICc_type14_total_diff/AICc_type14_count
+    }
     AICc_type14_matrix[row, 2] = AICc_type14_count
     
-    BIC_type14_matrix[row, 1] = BIC_type14_total_diff/BIC_type14_count
+    if (BIC_type14_count == 0){
+      BIC_type14_matrix[row, 1] = 0
+    }
+    else{
+      BIC_type14_matrix[row, 1] = BIC_type14_total_diff/BIC_type14_count
+    }
     BIC_type14_matrix[row, 2] = BIC_type14_count
     
     row = row + 1
@@ -2851,5 +3030,6 @@ for (d in data_list){
   dat = data_retrieve(d)
   plot_all(dat, d, 7)
 }
+
 
 
