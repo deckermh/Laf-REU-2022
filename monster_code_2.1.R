@@ -2233,8 +2233,6 @@ six_hist <- function(data){
   
   breakpoints = pretty(min:max, n = 100)
   
-  print(breakpoints)
-  
   hist1 = hist(data[, 2], breaks = breakpoints, plot = FALSE)
   hist2 = hist(data[, 5], breaks = breakpoints, plot = FALSE)
   hist3 = hist(data[, 8], breaks = breakpoints, plot = FALSE)
@@ -2313,7 +2311,7 @@ six_hist <- function(data){
     ncol = 2,
     cex = .8
   )
-  dev.off()
+
 }
 ####Plot All to PDF####
 plot_all <- function(data, data_name, exp_col_num_AIC){
@@ -2340,7 +2338,7 @@ plot_all <- function(data, data_name, exp_col_num_AIC){
   graphics::layout(mat = matrix(c(1, 3, 5, 2, 4, 6), nrow = 3, ncol = 2))
   
   thumb_plot34(data, data_name, exp_col_num_AIC)
-  
+
   dev.off()
 }
 
@@ -3026,10 +3024,10 @@ graph_3D <- function(base_data_name, AIC_exp_num, thumb){
 
 
 ######temp#####
-for (d in data_list){
-  dat = data_retrieve(d)
-  plot_all(dat, d, 7)
-}
+# for (d in data_list){
+#   dat = data_retrieve(d)
+#   plot_all(dat, d, 7)
+# }
 
 
 
