@@ -2341,7 +2341,6 @@ plot_all <- function(data, data_name, exp_col_num_AIC){
 
   dev.off()
 }
-
 ####Plot Success and Failure Magnitudes and Differences####
 magnitude_of_success_plots <- function(data_name_list, var_of_int_vect, var_of_int_name, exp_col_num_AIC){
   ###for heterosked. use var_of_int_name = "ratio of min to max standard deviation"
@@ -3015,6 +3014,135 @@ graph_3D <- function(base_data_name, AIC_exp_num, thumb){
   # )
   # )
 }
+####ANNOVA####
+anova_matrix <- function(data_name_list, model_type){
+  #!!!!!!!!!!!!!!!!!!!!!
+  #when using, make sure you have the most recently updated version of
+  #anova_matrix.csv
+  
+  library(stringr)
+  ##don't uncomment lol
+  # matrix = matrix(NA, 1, 9)
+  # colnames(matrix) = c("sim_num", "gen_struct", "n_obs", "n_sub", "p", "het", "AIC_res", "AICc_res", "BIC_res")
+  # write.csv(matrix, "anova_matrix.csv", row.names = FALSE)
+  
+  anova = as.data.frame(read.csv("anova_matrix.csv", header = TRUE))
+  
+  for (name in data_name_list){
+    ##
+    #CS/AR1
+    ##
+    
+    if (model_type == "CS" | model_type == "AR1" | model_type == "SIM"){
+      s = str_split(name, "_", simplify = TRUE)
+      
+      p = s[11]
+      het = 0
+      n_sub = s[6]
+      n_obs = s[4]
+      gen_struct = model_type
+      
+      data = data_retrieve(name)
+      
+      sorted_results = data_analysis(data)
+      N = dim(data)[1]
+      
+      winner_matrix = matrix(0, 3, 6)
+      colnames(winner_matrix) = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1")
+      rownames(winner_matrix) = c("AIC", "AICc", "BIC")
+      
+      for (row in 1:N){
+        for (col in c(1:3)){
+          col_num = c(1, 7, 13)
+          string = sorted_results[row, col_num[col]]
+          string = str_split(string, ", ", simplify = TRUE)
+          if (string[1] == "UN"){
+            winner_matrix[col, 1] = winner_matrix[col, 1] + 1
+          }
+          if (string[1] == "SIM"){
+            winner_matrix[col, 2] = winner_matrix[col, 2] + 1
+          }
+          if (string[1] == "CS"){
+            winner_matrix[col, 3] = winner_matrix[col, 3] + 1
+          }
+          if (string[1] == "AR1"){
+            winner_matrix[col, 4] = winner_matrix[col, 4] + 1
+          }
+          if (string[1] == "CSH"){
+            winner_matrix[col, 5] = winner_matrix[col, 5] + 1
+          }
+          if (string[1] == "ARH1"){
+            winner_matrix[col, 6] = winner_matrix[col, 6] + 1
+          }
+        }
+      }
+    }
+    
+    ##
+    #CSH/ARH1
+    ##
+    
+    if (model_type == "CSH" | model_type == "ARH1"){
+      s = str_split(name, "p", simplify = TRUE)
+      s1 = str_split(s[1], "_", simplify = TRUE)
+      s2 = str_split(s[2], "_", simplify = TRUE)
+      
+      p = s2[2]
+      het = paste("0.", s1[9], sep = "")
+      n_sub = s1[6]
+      n_obs = s1[4]
+      gen_struct = model_type
+      
+      data = data_retrieve(name)
+      
+      sorted_results = data_analysis(data)
+      N = dim(data)[1]
+      
+      winner_matrix = matrix(0, 3, 6)
+      colnames(winner_matrix) = c("UN", "SIM", "CS", "AR1", "CSH", "ARH1")
+      rownames(winner_matrix) = c("AIC", "AICc", "BIC")
+      
+      for (row in 1:N){
+        for (col in c(1:3)){
+          col_num = c(1, 7, 13)
+          string = sorted_results[row, col_num[col]]
+          string = str_split(string, ", ", simplify = TRUE)
+          if (string[1] == "UN"){
+            winner_matrix[col, 1] = winner_matrix[col, 1] + 1
+          }
+          if (string[1] == "SIM"){
+            winner_matrix[col, 2] = winner_matrix[col, 2] + 1
+          }
+          if (string[1] == "CS"){
+            winner_matrix[col, 3] = winner_matrix[col, 3] + 1
+          }
+          if (string[1] == "AR1"){
+            winner_matrix[col, 4] = winner_matrix[col, 4] + 1
+          }
+          if (string[1] == "CSH"){
+            winner_matrix[col, 5] = winner_matrix[col, 5] + 1
+          }
+          if (string[1] == "ARH1"){
+            winner_matrix[col, 6] = winner_matrix[col, 6] + 1
+          }
+        }
+      }
+    }
+    #proportion of time min was correct
+    AIC_res = max(winner_matrix[1,])/N
+    AICc_res = max(winner_matrix[2,])/N
+    BIC_res = max(winner_matrix[3,])/N
+    
+    new_row = c(1, gen_struct, n_obs, n_sub, p, het, AIC_res, AICc_res, BIC_res)
+    anova = rbind(anova, new_row)
+  }
+  print(anova)
+  write.csv(anova, "anova_matrix.csv", row.names = FALSE)
+}
+
+
+
+
 
 
 
