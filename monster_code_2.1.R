@@ -671,6 +671,25 @@ homo_mass_data <- function(base_data_name){
   }
   return(data_list)
 }
+####SIM Mass Data Name Retrieve For CS Data####
+sim_mass_data <- function(base_data_name){
+  library(stringr)
+  # "N_2500_obs_3_sub_25_SIM_sigma_1_p_0.3_means_0_0_0.csv"
+  str_pieces = str_split(base_data_name, "sub_25", n = 3, simplify = TRUE)
+  temp = str_split(str_pieces[2], "sigma_1", simplify = TRUE)
+  str_pieces[2] = temp[1]
+  str_pieces[3] = temp[2]
+  
+  #data list will be list of 36 filenames to be called
+  data_list = c()
+  for (sub in c(25, 50, 100, 500)){
+    for (sigma in c(1, 3, 5, 10)){
+      filename = paste(str_pieces[1], "sub_", sub, str_pieces[2], "sigma_", sigma, str_pieces[3], sep = "")
+      data_list = c(data_list, filename)
+    }
+  }
+  return(data_list)
+}
 ####Mass Data Name Retrieve For Heteroskedastic Data####
 mass_data <- function(base_data_name){
   library(stringr)
@@ -2113,8 +2132,8 @@ plot_new_thumb <- function(data, data_name, exp_col_num_AIC){
 }
 ####Winner Proportion Barplots####
 winner_barplots <- function(data, data_name){
-  # pdf(file=paste("winners", "_", data_name, ".pdf", sep = ""))
-  # graphics::layout(mat = matrix(c(1, 2, 3), nrow = 3, ncol = 1))
+  #pdf(file=paste("winners", "_", data_name, ".pdf", sep = ""))
+  #graphics::layout(mat = matrix(c(1, 2, 3), nrow = 3, ncol = 1))
   
   sorted_results = data_analysis(data)
   N = dim(data)[1]
@@ -2149,28 +2168,23 @@ winner_barplots <- function(data, data_name){
     }
   }
   
-  plot1 = barplot(
-    winner_matrix[1, ],
-    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
-    main = "AIC Winner Dist.", 
-    ylim = c(0,2500)
-  )
-  text(plot1, winner_matrix[1,] + 170, winner_matrix[1,], font=2, col= "black")
-  plot2 = barplot(
-    winner_matrix[2, ],
-    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
-    main = "AICc Winner Dist.", 
-    ylim = c(0,2500)
-  )
-  text(plot2, winner_matrix[2,] + 170, winner_matrix[2,], font=2, col= "black")
-  plot3 = barplot(
-    winner_matrix[3, ],
-    col = c("violetred1", "orange", "green", "royalblue1", "purple", "pink"),
-    main = "BIC Winner Dist.", 
-    ylim = c(0,2500)
-  )
-  text(plot3, winner_matrix[3,] + 170, winner_matrix[3,], font=2, col= "black")
+  print(winner_matrix)
   
+  plot = barplot(height = winner_matrix,                       # Grouped barplot using Base R
+          beside = TRUE,
+          col = c("lightblue1", "royalblue1", "hotpink"),
+          main = "Minimum IC Scored Model Counts Out of 2,500 Repetitions",
+          ylim = c(0,2550)
+          )
+  text(plot, winner_matrix + 40, winner_matrix, font=2, col= "black", cex = .6)
+  legend(
+    "topright",
+    legend = c("AIC", "AICc", "BIC"),
+    fill = c("lightblue1", "royalblue1", "hotpink"),
+    box.lty = 0,
+    ncol = 1,
+    cex = .9
+  )
   #dev.off()
 }
 ####IC Score Distribution Histograms####
@@ -2330,8 +2344,6 @@ plot_all <- function(data, data_name, exp_col_num_AIC){
   plot_new_thumb(data, data_name, exp_col_num_AIC)
   
   ###WINNER PLOTS###
-  graphics::layout(mat = matrix(c(1, 2, 3), nrow = 3, ncol = 1))
-  
   winner_barplots(data, data_name)
   
   ###Thumb vs. Type 3/4###
@@ -2351,10 +2363,10 @@ magnitude_of_success_plots <- function(data_name_list, var_of_int_vect, var_of_i
     var_of_int_name = expression(rho)
   }
   
-  base_data_name = unlist(data_name_list)[1]
-  name = str_split(base_data_name, "_means", simplify = TRUE)[1]
-  filename = paste(name, "_mag_of_success", ".pdf", sep = "")
-  pdf(filename)
+  # base_data_name = unlist(data_name_list)[1]
+  # name = str_split(base_data_name, "_means", simplify = TRUE)[1]
+  # filename = paste(name, "_mag_of_success", ".pdf", sep = "")
+  # pdf(filename)
   
   AIC_type23_matrix = matrix(0, length(var_of_int_vect), 2)
   colnames(AIC_type23_matrix) = c("mean of diff", "# times")
@@ -2497,7 +2509,7 @@ magnitude_of_success_plots <- function(data_name_list, var_of_int_vect, var_of_i
     AIC_type23_matrix[,1],
     main = "Frequency of (In)correct Model Selection and Magnitude of \n AIC Deviance From Closest Competing Model",
     xlab = var_of_int_name,
-    xlim = c(0,.9),
+    xlim = c(min(var_of_int_vect)-.1,max(var_of_int_vect)+min(var_of_int_vect)),
     ylim = c(min(AIC_type23_matrix[,1], AIC_type14_matrix[,1])-.1, max(AIC_type23_matrix[,1], AIC_type14_matrix[,1])+.1),
     ylab = "Mean of AIC Distances",
     pch = 20,
@@ -2533,7 +2545,7 @@ magnitude_of_success_plots <- function(data_name_list, var_of_int_vect, var_of_i
     AICc_type23_matrix[,1],
     main = "Frequency of (In)correct Model Selection and Magnitude of \n AICc Deviance From Closest Competing Model",
     xlab = var_of_int_name,
-    xlim = c(0,.9),
+    xlim = c(min(var_of_int_vect)-.1,max(var_of_int_vect)+min(var_of_int_vect)),
     ylim = c(min(AICc_type23_matrix[,1], AICc_type14_matrix[,1])-.1, max(AICc_type23_matrix[,1], AICc_type14_matrix[,1])+.1),
     ylab = "Mean of AICc Distances",
     pch = 20,
@@ -2569,7 +2581,7 @@ magnitude_of_success_plots <- function(data_name_list, var_of_int_vect, var_of_i
     BIC_type23_matrix[,1],
     main = "Frequency of (In)correct Model Selection and Magnitude of \n BIC Deviance From Closest Competing Model",
     xlab = var_of_int_name,
-    xlim = c(0,.9),
+    xlim = c(min(var_of_int_vect)-.1,max(var_of_int_vect)+min(var_of_int_vect)),
     ylim = c(min(BIC_type23_matrix[,1], BIC_type14_matrix[,1])-.1, max(BIC_type23_matrix[,1], BIC_type14_matrix[,1])+.1),
     ylab = "Mean of BIC Distances",
     pch = 20,
@@ -2596,7 +2608,7 @@ magnitude_of_success_plots <- function(data_name_list, var_of_int_vect, var_of_i
     cex = .75
   )
   
-  dev.off()
+  #dev.off()
 }
 ####3D Plots for heterosked. vs. rho vs. type3/4####
 graph_3D <- function(base_data_name, AIC_exp_num, thumb){
@@ -3028,6 +3040,25 @@ anova_matrix <- function(data_name_list, model_type){
   
   anova = as.data.frame(read.csv("anova_matrix.csv", header = TRUE))
   
+  if (model_type == "UN"){
+    true_col = 1
+  }
+  if (model_type == "SIM"){
+    true_col = 2
+  }
+  if (model_type == "CS"){
+    true_col = 3
+  }
+  if (model_type == "AR1"){
+    true_col = 4
+  }
+  if (model_type == "CSH"){
+    true_col = 5
+  }
+  if (model_type == "ARH1"){
+    true_col = 6
+  }
+  
   for (name in data_name_list){
     ##
     #CS/AR1
@@ -3081,7 +3112,6 @@ anova_matrix <- function(data_name_list, model_type){
     ##
     #CSH/ARH1
     ##
-    
     if (model_type == "CSH" | model_type == "ARH1"){
       s = str_split(name, "p", simplify = TRUE)
       s1 = str_split(s[1], "_", simplify = TRUE)
@@ -3129,18 +3159,39 @@ anova_matrix <- function(data_name_list, model_type){
       }
     }
     #proportion of time min was correct
-    AIC_res = max(winner_matrix[1,])/N
-    AICc_res = max(winner_matrix[2,])/N
-    BIC_res = max(winner_matrix[3,])/N
+    AIC_res = winner_matrix[1,true_col]/N
+    AICc_res = winner_matrix[2,true_col]/N
+    BIC_res = winner_matrix[3,true_col]/N
     
     new_row = c(1, gen_struct, n_obs, n_sub, p, het, AIC_res, AICc_res, BIC_res)
+    print(new_row)
     anova = rbind(anova, new_row)
   }
-  print(anova)
+  print(tail(anova))
   write.csv(anova, "anova_matrix.csv", row.names = FALSE)
 }
 
-
+####Global Min for the Win???####
+global_min <- function(data_list, file_name, var_of_int_vect, var_of_int_name, exp_col_num_AIC){
+  pdf(file=paste(file_name, "_", "globalmin", ".pdf", sep = ""))
+  
+  ###PURPLE/GREEN###
+  magnitude_of_success_plots(data_list, var_of_int_vect, var_of_int_name, exp_col_num_AIC)
+  
+  ###WINNER PLOTS###
+  for (name in data_list){
+    data = data_retrieve(name)
+    winner_barplots(data, name)
+  }
+  
+  ###PLOT 6 HIST###
+  graphics::layout(mat = matrix(c(1, 2, 3), nrow = 3, ncol = 1))
+  
+  six_hist(data)
+  
+  dev.off()
+  
+}
 
 
 
